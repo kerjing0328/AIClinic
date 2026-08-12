@@ -147,7 +147,7 @@ Return exactly this JSON structure:
 }
 """
 
-# 3. Create messages
+# Create messages
 messages = [
     {
         "role": "system",
@@ -179,7 +179,7 @@ response = requests.post(
     }
 )
 
-# 5. Handle API errors
+# Handle API errors
 if not response.ok:
     print("OpenRouter error:")
     print(response.text)
