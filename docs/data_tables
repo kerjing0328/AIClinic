@@ -1,0 +1,50 @@
+┌─────────────────────┐
+│      patients       │
+├─────────────────────┤
+│ id                  │
+│ patient_number      │
+│ name                │
+│ date_of_birth       │
+│ gender              │
+│ created_at          │
+│ updated_at          │
+└──────────┬──────────┘
+           │
+           │ 1:N
+           ▼
+┌─────────────────────────────────┐
+│         consultations           │
+├─────────────────────────────────┤
+│ id                              │
+│ patient_id ────────────────┐    │
+│ doctor_id ─────────────┐   │    │
+│ consultation_date      │   │    │
+│ consultation_type      │   │    │
+│ status                  │   │    │
+│ transcript              │   │    │
+│ extracted_data JSONB    │   │    │
+│ clinical_note JSONB     │   │    │
+│ final_note              │   │    │
+│ created_at              │   │    │
+│ updated_at              │   │    │
+└──────────────────────────┼──┼────┘
+                           │  │
+                           │  │
+             ┌─────────────┘  │
+             │                │
+             ▼                │
+┌─────────────────────┐       │
+│      doctors        │       │
+├─────────────────────┤       │
+│ id                  │       │
+│ name                │       │
+│ email               │       │
+│ specialization      │       │
+│ created_at          │       │
+└─────────────────────┘       │
+                              │
+                    patient_id│
+                    references
+                              │
+                              ▼
+                         patients
