@@ -1,0 +1,123 @@
+Doctor: Good morning. What can I do for you today?
+
+Patient: I've been coughing quite badly and I've got a sore throat.
+
+Doctor: How long has that been going on?
+
+Patient: About a week now.
+
+Doctor: Okay. Did the sore throat come first?
+
+Patient: Yeah, the sore throat started first, then the cough came about two days later.
+
+Doctor: Is the cough mostly dry?
+
+Patient: Yeah, mostly. Sometimes there's a bit of white mucus.
+
+Doctor: And is it worse at night?
+
+Patient: Yeah, especially when I lie down. It's been keeping me awake.
+
+Doctor: How would you rate it out of ten?
+
+Patient: Seven, probably.
+
+Doctor: That's quite troublesome. Apart from the throat and cough, what else have you noticed?
+
+Patient: My nose has been running quite a lot, and I've felt a bit tired.
+
+Doctor: Any fever?
+
+Patient: I had chills on the first day, but I didn't check my temperature.
+
+Doctor: Any headache?
+
+Patient: A little.
+
+Doctor: Body aches?
+
+Patient: No.
+
+Doctor: Any trouble breathing?
+
+Patient: No.
+
+Doctor: Any chest pain?
+
+Patient: No.
+
+Doctor: Any wheezing?
+
+Patient: No.
+
+Doctor: And no blood when you're coughing?
+
+Patient: No.
+
+Doctor: Are you managing to eat and drink normally?
+
+Patient: Yes.
+
+Doctor: Any difficulty swallowing?
+
+Patient: No.
+
+Doctor: Any swelling around your neck?
+
+Patient: No.
+
+Doctor: Has anyone close to you been sick recently?
+
+Patient: My brother had something similar last week.
+
+Doctor: Have you tested yourself for COVID?
+
+Patient: No.
+
+Doctor: Okay. Tell me about your general health. Do you have any medical conditions?
+
+Patient: I've got high blood pressure.
+
+Doctor: Okay. Are you taking medication for that?
+
+Patient: Yes, but I can't remember the name right now.
+
+Doctor: That's alright. Have you taken anything for the cough or sore throat?
+
+Patient: Just some paracetamol yesterday. It helped a little.
+
+Doctor: Any medication allergies?
+
+Patient: I'm not sure.
+
+Doctor: Okay. We'll make a note of that. Let me examine you.
+
+Doctor: Your throat is mildly red, but I don't see any pus on the tonsils. Your nose is congested. Let me listen to your lungs.
+
+Doctor: Take a deep breath in... and out.
+
+Doctor: Again.
+
+Doctor: Your chest sounds clear. I don't hear any wheezing or crackles.
+
+Patient: Is it just a viral infection?
+
+Doctor: Most likely. Your symptoms fit with an uncomplicated viral upper respiratory tract infection. At the moment, I don't see signs of pneumonia or a serious throat infection.
+
+Patient: So I don't need antibiotics?
+
+Doctor: No, not based on today's assessment.
+
+Doctor: I'd recommend rest and plenty of fluids. You can continue paracetamol when needed for the throat pain or fever. Warm salt-water gargles can help, and saline nasal spray may help with the runny or blocked nose.
+
+Patient: And for the cough?
+
+Doctor: The cough can take a few weeks to fully settle. If it's still bothering you after that, come back and we'll reassess it.
+
+Patient: Okay.
+
+Doctor: If you develop difficulty breathing, chest pain, cough up blood, have severe difficulty swallowing, develop a persistent high fever, or feel significantly worse, seek medical attention urgently.
+
+Patient: Alright, thank you.
+
+Doctor: You're welcome. Take care.

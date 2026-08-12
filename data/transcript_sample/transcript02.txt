@@ -1,0 +1,131 @@
+Doctor: Hi, come in. What seems to be bothering you?
+
+Patient: I've had this cough for about four days and my throat's been really sore.
+
+Doctor: Four days, okay. Did the cough and sore throat start around the same time?
+
+Patient: Pretty much. The sore throat was maybe a day before the cough.
+
+Doctor: And what is the cough like?
+
+Patient: Mostly dry. It's worse when I'm trying to sleep.
+
+Doctor: Are you bringing up any phlegm?
+
+Patient: Just a little sometimes.
+
+Doctor: What colour is it?
+
+Patient: Hmm, I'm not really sure. I haven't paid attention.
+
+Doctor: That's alright. How bad is the cough?
+
+Patient: Maybe five out of ten.
+
+Doctor: And the sore throat?
+
+Patient: Probably six. It hurts when I swallow.
+
+Doctor: Are you still able to eat and drink normally?
+
+Patient: Yeah, no problem with that.
+
+Doctor: Have you had a temperature?
+
+Patient: I felt quite warm yesterday, but I didn't actually check.
+
+Doctor: Any runny or blocked nose?
+
+Patient: Yeah, my nose has been blocked.
+
+Doctor: Headache?
+
+Patient: A little.
+
+Doctor: Feeling tired?
+
+Patient: Yeah, more than usual.
+
+Doctor: Any body aches?
+
+Patient: No.
+
+Doctor: How about your breathing? Any shortness of breath?
+
+Patient: No.
+
+Doctor: Chest pain?
+
+Patient: No.
+
+Doctor: Any wheezing?
+
+Patient: No.
+
+Doctor: Any blood when you cough?
+
+Patient: No.
+
+Doctor: Okay. Any trouble swallowing apart from the pain?
+
+Patient: No.
+
+Doctor: Any swelling in your neck?
+
+Patient: I think maybe a little, but I'm not sure.
+
+Doctor: That's okay. Has anyone around you been sick recently?
+
+Patient: One of my coworkers had a cold.
+
+Doctor: Have you done a COVID test?
+
+Patient: No, I haven't.
+
+Doctor: Alright. Do you have any medical conditions?
+
+Patient: Nothing important.
+
+Doctor: Do you take any regular medication?
+
+Patient: No.
+
+Doctor: Any medication allergies that you know of?
+
+Patient: I don't think so.
+
+Doctor: Okay. Let me check you over.
+
+Doctor: Your temperature is 37.6 degrees. Blood pressure is 118 over 74, pulse is 88, and your oxygen level is 98%. Your breathing rate is 17.
+
+Doctor: Your throat is mildly red, without obvious pus. Your nose is congested. I'll listen to your chest.
+
+Doctor: Deep breath in... and out.
+
+Doctor: Your chest sounds clear. I can't hear any wheezing or crackles.
+
+Patient: So it's probably just a cold?
+
+Doctor: That's what it looks like at the moment. Your symptoms and examination are most consistent with a viral upper respiratory infection.
+
+Patient: Do I need antibiotics?
+
+Doctor: No, there's nothing at the moment that suggests you need them.
+
+Patient: What should I take?
+
+Doctor: Get plenty of rest and fluids. Paracetamol can help with the throat pain or fever. You can also try warm salt-water gargles and saline nasal spray for the blocked nose.
+
+Patient: And the cough?
+
+Doctor: It may take a couple of weeks to settle completely. If it's particularly troublesome at night, you can consider a simple cough medicine.
+
+Patient: Okay.
+
+Doctor: If you become short of breath, develop chest pain, cough up blood, have severe difficulty swallowing, or become significantly worse, seek medical attention promptly.
+
+Patient: Alright.
+
+Doctor: If you're not starting to improve over the next week, come back and we'll review you.
+
+Patient: Thanks, doctor.

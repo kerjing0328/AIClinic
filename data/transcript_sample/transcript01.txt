@@ -1,0 +1,157 @@
+Doctor: Hi, good morning. What brings you in today?
+
+Patient: Morning, doctor. I've been feeling pretty unwell for the past few days. I've got a cough and my throat has been hurting.
+
+Doctor: Okay. Tell me a little more about it. When did you first notice the symptoms?
+
+Patient: The sore throat started about five days ago. Then I started coughing the next day.
+
+Doctor: Has the cough been there throughout the day?
+
+Patient: It's there during the day, but it's much worse at night. I've actually been waking up because of it.
+
+Doctor: Is it mainly a dry cough, or are you bringing up anything?
+
+Patient: Mostly dry. Sometimes there's a little bit of clear mucus, but not much.
+
+Doctor: And if you had to rate the cough out of ten, how bad would you say it is?
+
+Patient: Probably a six. It's not unbearable, but it's really annoying.
+
+Doctor: What about the sore throat? Is that getting better or worse?
+
+Patient: It was quite bad at first, but it's slowly getting better. Maybe five out of ten now. It hurts when I swallow, but I can still eat and drink.
+
+Doctor: Have you had any fever?
+
+Patient: Yeah, I felt feverish during the first couple of days. I checked it once and it was around 38 degrees.
+
+Doctor: Any chills with that?
+
+Patient: A little bit on the first night.
+
+Doctor: What about your nose? Any blocked nose or runny nose?
+
+Patient: Yeah, both actually. My nose has been blocked and I've had clear discharge.
+
+Doctor: Any sneezing?
+
+Patient: A little.
+
+Doctor: Headache?
+
+Patient: Mild headache.
+
+Doctor: Body aches?
+
+Patient: Not really.
+
+Doctor: How's your energy? Feeling unusually tired?
+
+Patient: Yeah, I've been more tired than usual.
+
+Doctor: Okay. I also want to check for some symptoms that would be more concerning. Have you felt short of breath at all?
+
+Patient: No.
+
+Doctor: Any chest pain?
+
+Patient: No.
+
+Doctor: Any wheezing?
+
+Patient: No.
+
+Doctor: Have you coughed up any blood?
+
+Patient: No.
+
+Doctor: And your throat — any difficulty swallowing liquids, drooling, or feeling like your throat is closing up?
+
+Patient: No, nothing like that.
+
+Doctor: Any swelling around your neck?
+
+Patient: No.
+
+Doctor: Have you noticed any loss of taste or smell?
+
+Patient: No.
+
+Doctor: Has anyone around you been sick recently?
+
+Patient: Actually, yes. One of my colleagues had a bad cold last week.
+
+Doctor: Have you done a COVID test?
+
+Patient: Yes, I did one at home two days ago. It was negative.
+
+Doctor: Okay. Before this illness, were you generally well?
+
+Patient: Mostly. I have mild asthma, but it's usually under control.
+
+Doctor: Have you needed your inhaler more than usual since you've been coughing?
+
+Patient: No, actually. I haven't used it at all this week.
+
+Doctor: Any other medical conditions?
+
+Patient: No.
+
+Doctor: Are you taking any regular medications apart from your inhaler?
+
+Patient: No.
+
+Doctor: Any allergies to medications?
+
+Patient: No known drug allergies.
+
+Doctor: Do you smoke?
+
+Patient: No, I've never smoked.
+
+Doctor: Vape?
+
+Patient: No.
+
+Doctor: And alcohol?
+
+Patient: Maybe one or two drinks on the weekend.
+
+Doctor: Okay. Let me have a look at you.
+
+Doctor: Your temperature is 37.4 degrees, blood pressure is 124 over 78, heart rate 84, respiratory rate 16, oxygen saturation 98% on room air, and your weight is 68 kilograms.
+
+Doctor: Your throat is a little red, but I don't see any pus or significant swelling. Your nose is congested with clear discharge. There's a little tenderness around the neck glands. Let me listen to your chest.
+
+Doctor: Take a deep breath in... and out. Again.
+
+Doctor: Your chest sounds clear. I don't hear any wheezing or crackles, and you're breathing comfortably.
+
+Patient: So it's nothing serious?
+
+Doctor: From what you've told me and from the examination, this looks most consistent with a viral upper respiratory tract infection. The cough and sore throat are part of that. I don't see anything at the moment to suggest pneumonia or a serious throat infection.
+
+Patient: So I don't need antibiotics?
+
+Doctor: No, I wouldn't recommend antibiotics at this point. They won't help if this is viral.
+
+Patient: What can I take for the cough?
+
+Doctor: For now, plenty of fluids and rest. You can take paracetamol if your throat is painful or you feel feverish. Warm salt-water gargles can also help your throat, and saline nasal spray may help with the blocked nose. If the cough is keeping you awake, you could use a simple cough medicine at night.
+
+Patient: How long should the cough take to go away?
+
+Doctor: The other symptoms should start settling over the next few days, but the cough can hang around for two or three weeks after a viral infection.
+
+Patient: Okay.
+
+Doctor: Just keep an eye on things. If you develop difficulty breathing, chest pain, cough up blood, have severe difficulty swallowing, develop a persistent high fever, or suddenly get much worse, you should seek medical attention urgently.
+
+Patient: Alright.
+
+Doctor: Otherwise, if you're not improving over the next week, or the cough continues beyond three weeks, come back and we'll reassess you.
+
+Patient: Got it. Thanks, doctor.
+
+Doctor: You're welcome. Take care.
