@@ -1,0 +1,61 @@
+{
+  "consultation": {
+    "patient_id": "",
+    "doctor_id": "",
+    "date": "",
+    "type": "new",
+
+    "chief_complaint": "",
+
+    "history": {
+      "symptoms": [],
+      "onset": "",
+      "duration": "",
+      "severity": "",
+      "associated_symptoms": [],
+      "relevant_negatives": [],
+      "medical_history": [],
+      "medications": [],
+      "allergies": [],
+      "social_history": ""
+    },
+
+    "examination": {
+      "vital_signs": {
+        "temperature": null,
+        "blood_pressure": "",
+        "heart_rate": null,
+        "respiratory_rate": null,
+        "oxygen_saturation": null,
+        "weight": null
+      },
+      "findings": ""
+    },
+
+    "investigations": {
+      "results": [],
+      "ordered": []
+    },
+
+    "assessment": {
+      "diagnosis": [],
+      "clinical_impression": ""
+    },
+
+    "plan": {
+      "medications": [],
+      "treatment": [],
+      "referral": [],
+      "follow_up": "",
+      "safety_netting": [],
+      "patient_instructions": []
+    },
+
+    "clinical_note": {
+      "subjective": "",
+      "objective": "",
+      "assessment": "",
+      "plan": ""
+    }
+  }
+}
