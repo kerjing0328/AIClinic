@@ -1,0 +1,107 @@
+{
+  "consultation": {
+    "patient_id": "",
+    "doctor_id": "",
+    "date": "",
+    "type": "new",
+    "chief_complaint": "cough and sore throat",
+    "history": {
+      "symptoms": [
+        "cough",
+        "sore throat",
+        "feverish",
+        "chills",
+        "blocked nose",
+        "clear nasal discharge",
+        "sneezing",
+        "mild headache",
+        "fatigue"
+      ],
+      "onset": "5 days ago",
+      "duration": "5 days",
+      "severity": "cough 6/10, sore throat 5/10",
+      "associated_symptoms": [
+        "feverish",
+        "chills",
+        "blocked nose",
+        "clear nasal discharge",
+        "sneezing",
+        "mild headache",
+        "fatigue"
+      ],
+      "relevant_negatives": [
+        "no shortness of breath",
+        "no chest pain",
+        "no wheezing",
+        "no hemoptysis",
+        "no difficulty swallowing liquids",
+        "no drooling",
+        "no throat closing",
+        "no neck swelling",
+        "no loss of taste or smell"
+      ],
+      "medical_history": [
+        "mild asthma"
+      ],
+      "medications": [
+        "inhaler (not used this week)"
+      ],
+      "allergies": [],
+      "social_history": "never smoked, no vaping, occasional alcohol 1-2 drinks weekends"
+    },
+    "examination": {
+      "vital_signs": {
+        "temperature": 37.4,
+        "blood_pressure": "124/78",
+        "heart_rate": 84,
+        "respiratory_rate": 16,
+        "oxygen_saturation": 98,
+        "weight": 68
+      },
+      "findings": "throat slightly red, no pus or swelling; nose congested with clear discharge; mild tenderness around neck glands; chest clear, no wheezing or crackles; breathing comfortable"
+    },
+    "investigations": {
+      "results": [
+        "COVID test negative"
+      ],
+      "ordered": []
+    },
+    "assessment": {
+      "diagnosis": [
+        "viral upper respiratory tract infection"
+      ],
+      "clinical_impression": "consistent with viral URI, no pneumonia or serious throat infection"
+    },
+    "plan": {
+      "medications": [
+        "paracetamol as needed for pain or fever",
+        "simple cough medicine at night if needed",
+        "saline nasal spray",
+        "warm salt-water gargles"
+      ],
+      "treatment": [
+        "rest",
+        "fluids"
+      ],
+      "referral": [],
+      "follow_up": "if not improving over next week or cough beyond 3 weeks, return for reassessment",
+      "safety_netting": [
+        "seek medical attention if difficulty breathing, chest pain, cough up blood, severe difficulty swallowing, persistent high fever, sudden worsening"
+      ],
+      "patient_instructions": [
+        "rest",
+        "increase fluids",
+        "take paracetamol if throat painful or feverish",
+        "use warm salt-water gargles",
+        "use saline nasal spray",
+        "use simple cough medicine at night if cough keeps you awake"
+      ]
+    },
+    "clinical_note": {
+      "subjective": "Patient reports cough, sore throat, feverish, chills, nasal congestion, mild headache, fatigue for 5 days; denies shortness of breath, chest pain, wheezing, hemoptysis, swallowing difficulty, drooling, throat closing, neck swelling, loss of taste/smell.",
+      "objective": "Vitals: T 37.4°C, BP 124/78, HR 84, RR 16, SpO2 98%, weight 68 kg. Exam: throat slightly red, no pus, nasal congestion with clear discharge, mild neck tenderness, clear lungs, no wheeze or crackles.",
+      "assessment": "Viral upper respiratory tract infection.",
+      "plan": "Supportive care: rest, fluids, paracetamol as needed, warm salt-water gargles, saline nasal spray, simple cough medicine at night if needed. No antibiotics. Follow up if no improvement in week or cough >3 weeks. Safety netting instructions provided."
+    }
+  }
+}
