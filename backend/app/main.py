@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.services.supabaseconn import supabase
+from backend.app.services.supabase_conn import supabase
+from app.api_router.create_patient_doctor import router as create_patient_doctor_router
+from app.api_router.consultation_stage import router as consultation_stage_router
+
 
 app = FastAPI(
     title="AI Clinical Assistant API",
@@ -15,13 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.get("/")
 def root():
     return {
         "message": "AI Clinical Assistant API is running"
     }
-
 
 @app.get("/health")
 def health():
@@ -45,3 +46,6 @@ def test_supabase():
             "status": "error",
             "message": str(e)
         }
+
+app.include_router(create_patient_doctor_router)
+app.include_router(consultation_stage_router)
