@@ -23,7 +23,7 @@
 │ status                 │   │    │
 │ transcript             │   │    │
 │ extracted_data JSONB   │   │    │
-│ final_note (dr approve)│   │    │ #insert the demographics DOB and gender for LLM
+│ final_note JSONB (dr approve)   │ #insert the demographics DOB and gender for LLM
 │ created_at             │   │    │
 │ updated_at             │   │    │
 └────────────────────────┼── ┼────┘
