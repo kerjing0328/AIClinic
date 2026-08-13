@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.services.supabase_service import supabase
+from app.services.supabaseconn import supabase
 
 app = FastAPI(
     title="AI Clinical Assistant API",
