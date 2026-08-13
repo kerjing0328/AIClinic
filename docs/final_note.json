@@ -5,6 +5,11 @@
     "date": "",
     "type": "new",
 
+    "demographics": {
+      "age": null,
+      "sex": ""
+    },
+
     "chief_complaint": "",
 
     "history": {
@@ -49,6 +54,13 @@
       "follow_up": "",
       "safety_netting": [],
       "patient_instructions": []
+    },
+
+    "clinical_note": {
+      "subjective": "",
+      "objective": "",
+      "assessment": "",
+      "plan": ""
     }
   }
 }

@@ -4,6 +4,8 @@
 │ id                  │
 │ patient_ic          │
 │ name                │
+│ phone               │
+│ address             │
 │ age (auto)          │
 │ gender (auto)       │
 │ created_at          │
