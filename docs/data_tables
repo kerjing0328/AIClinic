@@ -1,11 +1,11 @@
 ┌─────────────────────┐
-│      patients       │
+│      patients       │ #registered at reception
 ├─────────────────────┤
 │ id                  │
-│ patient_number      │
+│ patient_ic          │
 │ name                │
-│ date_of_birth       │
-│ gender              │
+│ date_of_birth (auto)│
+│ gender (auto)       │
 │ created_at          │
 │ updated_at          │
 └──────────┬──────────┘
@@ -20,31 +20,30 @@
 │ doctor_id ─────────────┐   │    │
 │ consultation_date      │   │    │
 │ consultation_type      │   │    │
-│ status                  │   │    │
-│ transcript              │   │    │
-│ extracted_data JSONB    │   │    │
-│ clinical_note JSONB     │   │    │
-│ final_note              │   │    │
-│ created_at              │   │    │
-│ updated_at              │   │    │
-└──────────────────────────┼──┼────┘
-                           │  │
-                           │  │
-             ┌─────────────┘  │
-             │                │
-             ▼                │
-┌─────────────────────┐       │
-│      doctors        │       │
-├─────────────────────┤       │
-│ id                  │       │
-│ name                │       │
-│ email               │       │
-│ specialization      │       │
-│ created_at          │       │
-└─────────────────────┘       │
-                              │
-                    patient_id│
-                    references
-                              │
-                              ▼
+│ status                 │   │    │
+│ transcript             │   │    │
+│ extracted_data JSONB   │   │    │
+│ final_note (dr approve)│   │    │ #insert the demographics DOB and gender for LLM
+│ created_at             │   │    │
+│ updated_at             │   │    │
+└────────────────────────┼── ┼────┘
+                         │   │
+                         │   │   
+             ┌───────────┘   │
+             │               │
+             ▼               │
+┌─────────────────────┐      │
+│      doctors        │      │
+├─────────────────────┤      │
+│ id                  │      │
+│ name                │      │
+│ email               │      │
+│ specialization      │      │
+│ created_at          │      │
+└─────────────────────┘      │
+                             │
+                   patient_id│
+                   references
+                             │
+                             ▼
                          patients
