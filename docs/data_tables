@@ -4,7 +4,7 @@
 │ id                  │
 │ patient_ic          │
 │ name                │
-│ date_of_birth (auto)│
+│ age (auto)          │
 │ gender (auto)       │
 │ created_at          │
 │ updated_at          │
