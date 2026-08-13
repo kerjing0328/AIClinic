@@ -203,7 +203,7 @@ def derive_from_ic(ic: str) -> dict:
 # DOMAIN HELPERS  —  PATIENTS  (registered at reception; PII lives here)
 # ===========================================================================
 
-def create_patient(patient_ic: str, name: str) -> dict:
+def create_patient(patient_ic: str, name: str, phone: str, address: str) -> dict:
     """
     Register a patient at reception.
     age and gender are AUTO-derived from the IC number.
@@ -212,6 +212,8 @@ def create_patient(patient_ic: str, name: str) -> dict:
     data = {
         "patient_ic": patient_ic,        # PII — never sent to LLM
         "name": name,                    # PII — never sent to LLM
+        "phone": phone,
+        "address": address,
         "age": demographics["age"],      # auto-derived
         "gender": demographics["gender"],  # auto-derived
     }
@@ -351,8 +353,10 @@ if __name__ == "__main__":
     print("\n--- Create Patient Test (writes to DB) ---")
     try:
         new_patient = create_patient(
-            patient_ic="800315-14-5237",
-            name="Test Patient",
+            patient_ic="030101-01-0123",
+            name="Sia",
+            phone="0121234567",
+            address="123, Jalan Gembira, Sitiawan."
         )
         print("Inserted patient:", new_patient)
 
