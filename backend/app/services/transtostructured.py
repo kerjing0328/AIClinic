@@ -35,62 +35,71 @@ IMPORTANT RULES:
 1. Extract information ONLY from the transcript.
    Do not invent, assume, or fabricate information.
 
-2. If information is not mentioned, use:
-   - "" for missing text
-   - [] for missing lists
-   - null for missing numeric vital signs
+2. DISTINGUISH between "not mentioned" and "explicitly stated as none".
+   This is critical:
+
+   a) NOT MENTIONED AT ALL (topic never came up) → leave empty:
+      - "" for text fields
+      - [] for list fields
+      - null for numeric vital signs
+
+   b) EXPLICITLY STATED AS NONE / ABSENT (patient or doctor actively
+      confirmed there is nothing) → DO NOT leave empty. Fill it with "NA":
+      - Patient says "no allergies" → allergies: ["NA"]
+      - Patient says "not taking any medication" → medications: ["NA"]
+      - Patient says "no past medical history" → medical_history: ["NA"]
+      - No tests were done and none mentioned → results: [] (not mentioned)
+      - Doctor confirms "no tests needed" → ordered: ["NA"]
+      - No social history discussed → social_history: "" (not mentioned)
+      - Patient says "I don't drink or smoke" → social_history: "No smoking, no alcohol"
+
+   Rule of thumb:
+   - Silence on a topic → empty ("" / [] / null)
+   - An explicit "none / no / denies / not applicable" → ["NA"] or "NA"
 
 3. Do not diagnose the patient yourself.
    Only include a diagnosis if the doctor explicitly states it.
+   If no diagnosis is stated → diagnosis: [] (not [""]).
 
 4. Preserve uncertainty.
-   For example:
-   "possible pneumonia" must remain a possible diagnosis and must
-   not become a confirmed diagnosis.
+   For example: "possible pneumonia" must remain a possible diagnosis and
+   must not become a confirmed diagnosis.
 
-5. Preserve clinically important negative findings.
+5. Preserve clinically important negative findings as relevant_negatives.
    Examples:
-   - "No fever" → relevant_negatives
-   - "Denies chest pain" → relevant_negatives
-   - "No known allergies" → allergies
+   - "No fever" → relevant_negatives: ["no fever"]
+   - "Denies chest pain" → relevant_negatives: ["denies chest pain"]
+   - "No shortness of breath" → relevant_negatives: ["no shortness of breath"]
+   (Note: allergy/medication/history denials go in their own fields as "NA",
+    NOT in relevant_negatives.)
 
-6. Distinguish subjective and objective information:
-   - Subjective = information reported by the patient
-   - Objective = vital signs, examination findings, test results
-
-7. For investigations:
+6. For investigations:
    - Completed tests and their results → results
    - Tests ordered or recommended → ordered
+   - If explicitly stated that no tests are needed → ordered: ["NA"]
 
-8. Extract medications mentioned as:
+7. Extract medications mentioned as:
    - Current medications
    - Newly prescribed medications
    - Other medication information explicitly discussed
+   - If patient explicitly denies any medication → medications: ["NA"]
 
-9. Extract the consultation date only if explicitly mentioned.
-
-10. Extract patient_id and doctor_id only if explicitly mentioned.
-
-11. Consultation type:
+8. Consultation type:
    - "new" if clearly a new consultation
    - "follow-up" if clearly a follow-up consultation
    - "" if it cannot be determined
 
-12. Do not copy the entire transcript.
+9. Do not copy the entire transcript.
    Summarize the extracted information concisely.
 
-13. Return ONLY valid JSON.
-   Do not return Markdown, explanations, or code fences.
+10. Return ONLY valid JSON.
+    Do not return Markdown, explanations, or code fences.
 
 Return exactly this JSON structure:
 
 {
-  "consultation": {
-    "patient_id": "",
-    "doctor_id": "",
-    "date": "",
+  "extracted_data": {
     "type": "",
-
     "chief_complaint": "",
 
     "history": {
@@ -135,13 +144,6 @@ Return exactly this JSON structure:
       "follow_up": "",
       "safety_netting": [],
       "patient_instructions": []
-    },
-
-    "clinical_note": {
-      "subjective": "",
-      "objective": "",
-      "assessment": "",
-      "plan": ""
     }
   }
 }

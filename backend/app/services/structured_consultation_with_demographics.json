@@ -98,6 +98,8 @@
         "monitor symptoms and seek urgent care if severe symptoms arise",
         "return if not improving after one week or cough lasts longer than three weeks"
       ]
-    }
+    },
+    "age": 23,
+    "sex": "male"
   }
 }
