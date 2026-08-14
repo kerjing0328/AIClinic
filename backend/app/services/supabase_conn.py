@@ -1,5 +1,5 @@
 """
-supabase_client.py
+supabase_conn.py
 ------------------
 Reusable Supabase helper functions for the AI Clinical Assistant MVP.
 
@@ -325,6 +325,45 @@ def approve_consultation(consultation_id: Any, final_note: dict,
 def delete_consultation(consultation_id: Any) -> bool:
     """Delete a consultation by id (demo/cleanup use)."""
     return delete_row("consultations", consultation_id, id_column="id")
+
+
+# ===========================================================================
+# DOMAIN HELPERS  —  MEDICAL REFERENCES
+# ===========================================================================
+
+def insert_medical_reference(data: dict) -> dict:
+    """Insert a medical reference chunk if it does not already exist."""
+    try:
+        response = supabase.table("medical_references").upsert(
+            data,
+            on_conflict="chunk_hash",
+            ignore_duplicates=True
+        ).execute()
+
+        return response.data[0] if response.data else {}
+
+    except Exception as e:
+        print(f"[insert_medical_reference] Error inserting medical reference: {e}")
+        raise
+
+
+def insert_medical_references(rows: list[dict]) -> list[dict]:
+    """Insert multiple medical reference chunks while ignoring duplicates."""
+    if not rows:
+        return []
+
+    try:
+        response = supabase.table("medical_references").upsert(
+            rows,
+            on_conflict="chunk_hash",
+            ignore_duplicates=True
+        ).execute()
+
+        return response.data or []
+
+    except Exception as e:
+        print(f"[insert_medical_references] Error inserting medical references: {e}")
+        raise
 
 
 # ===========================================================================
