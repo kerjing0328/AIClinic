@@ -187,6 +187,7 @@ export default function PatientsPage() {
 /* ============================================================
    Patient row (list item)
    ============================================================ */
+
 function PatientRow({
     patient,
     onView,
@@ -442,7 +443,7 @@ function EditModal({
                 <div className="mb-7">
                     <p className="label">Edit</p>
                     <h2 className="mt-1 text-3xl font-semibold tracking-tight">
-                        Update patient
+                        Update patient data
                     </h2>
                     <p className="mt-2 text-sm text-[var(--color-text-muted)]">
                         Age and gender re-derive automatically from the IC on save.

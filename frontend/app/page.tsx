@@ -231,8 +231,10 @@ export default function Home() {
                     label="Malaysian IC"
                     placeholder="e.g. 900101-14-5678"
                     value={form.patient_ic}
-                    onChange={(v) => update("patient_ic", v)}
+                    onChange={(v) => update("patient_ic", formatMalaysianIC(v))}
                     disabled={isSubmitting}
+                    inputMode="numeric"
+                    maxLength={14}
                   />
                   <Field
                     id="name"
@@ -312,6 +314,14 @@ function Detail({ label, value }: { label: string; value: string }) {
       <dd className="mt-1 font-medium text-[var(--color-text-main)]">{value}</dd>
     </div>
   );
+}
+
+function formatMalaysianIC(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 12);
+
+  return digits
+    .replace(/^(\d{6})(\d)/, "$1-$2")
+    .replace(/^(\d{6})-(\d{2})(\d)/, "$1-$2-$3");
 }
 
 interface FieldProps {

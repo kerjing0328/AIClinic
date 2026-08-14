@@ -236,9 +236,16 @@ def get_patient_demographics(patient_id: Any) -> Optional[dict]:
 
 
 def update_patient(patient_id: Any, data: dict) -> dict:
-    """Update a patient record."""
-    return update_row("patients", patient_id, data, id_column="id")
+    """Update a patient record. Re-derives age & gender if the IC changes."""
+    data = dict(data)  # don't mutate caller's dict
 
+    # If the IC is being updated, re-derive age & gender from it.
+    if data.get("patient_ic"):
+        demographics = derive_from_ic(data["patient_ic"])
+        data["age"] = demographics["age"]
+        data["gender"] = demographics["gender"]
+
+    return update_row("patients", patient_id, data, id_column="id")
 
 # ===========================================================================
 # DOMAIN HELPERS  —  DOCTORS
