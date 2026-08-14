@@ -1,46 +1,354 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { createPatient, type Patient } from "@/lib/api";
+
+type Status = "idle" | "submitting" | "success" | "error";
+
+interface FormState {
+  patient_ic: string;
+  name: string;
+  phone: string;
+  address: string;
+}
+
+const EMPTY_FORM: FormState = {
+  patient_ic: "",
+  name: "",
+  phone: "",
+  address: "",
+};
 
 export default function Home() {
-  const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [error, setError] = useState<string>("");
+  const [patient, setPatient] = useState<Patient | null>(null);
+  const firstFieldRef = useRef<HTMLInputElement>(null);
 
-  async function checkBackend() {
-    setLoading(true);
-    setStatus("");
+  function reset() {
+    setForm(EMPTY_FORM);
+    setStatus("idle");
+    setError("");
+    setPatient(null);
+  }
 
+  function openForm() {
+    reset();
+    setIsOpen(true);
+  }
+
+  function cancel() {
+    setIsOpen(false);
+    reset();
+  }
+
+  function update(key: keyof FormState, value: string) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("submitting");
+    setError("");
     try {
-      const response = await fetch("http://localhost:8000/health");
-
-      if (!response.ok) {
-        throw new Error("Backend request failed");
-      }
-
-      const data = await response.json();
-
-      setStatus(data.status);
-    } catch (error) {
-      console.error(error);
-      setStatus("Backend connection failed");
-    } finally {
-      setLoading(false);
+      const res = await createPatient({
+        patient_ic: form.patient_ic.trim(),
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        address: form.address.trim(),
+      });
+      setPatient(res.patient);
+      setStatus("success");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setStatus("error");
     }
   }
 
+  useEffect(() => {
+    if (isOpen && status !== "success") firstFieldRef.current?.focus();
+  }, [isOpen, status]);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape" && isOpen) cancel();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
+  const isSubmitting = status === "submitting";
+
   return (
-    <main>
-      <h1>AI Clinical Assistant</h1>
-
-      <button onClick={checkBackend}>
-        {loading ? "Checking..." : "Check Backend"}
-      </button>
-
-      {status && (
-        <p>
-          Backend status: {status}
+    <>
+      {/* Hero */}
+      <section className="flex flex-1 flex-col items-center justify-center py-20 text-center">
+        <p className="label mb-6" style={{ animation: "var(--animate-fade-up)" }}>
+          Patient Registration
         </p>
+        <h1
+          className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl"
+          style={{ animation: "var(--animate-fade-up)", animationDelay: "0.05s" }}
+        >
+          Welcome patients in{" "}
+          <span className="text-[var(--color-primary)]">seconds</span>.
+        </h1>
+        <p
+          className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--color-text-muted)]"
+          style={{ animation: "var(--animate-fade-up)", animationDelay: "0.1s" }}
+        >
+          Register a new patient at the front desk. Age and gender are derived
+          automatically from the Malaysian IC.
+        </p>
+
+        <div
+          className="mt-10 flex flex-col items-center gap-3 sm:flex-row"
+          style={{ animation: "var(--animate-fade-up)", animationDelay: "0.15s" }}
+        >
+          <button
+            onClick={openForm}
+            className="btn-primary rounded-full px-9 py-4 text-sm font-semibold uppercase"
+          >
+            Register Patient
+          </button>
+          <Link
+            href="/patients"
+            className="btn-ghost rounded-full px-9 py-4 text-sm font-semibold uppercase"
+          >
+            View Patients
+          </Link>
+        </div>
+      </section>
+
+      <footer className="pb-8 text-center">
+        <span className="label">AI Clinic Assistant · v1.0.0</span>
+      </footer>
+
+      {/* Modal / popup form */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Register new patient"
+        >
+          <div
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={cancel}
+            aria-hidden
+          />
+          <div
+            className="glass relative z-10 w-full max-w-lg p-8 sm:p-10"
+            style={{ borderRadius: "var(--radius-panel)", animation: "var(--animate-fade-up)" }}
+          >
+            {status === "success" ? (
+              <div className="flex flex-col items-center text-center">
+                <span
+                  className="flex h-16 w-16 items-center justify-center rounded-full"
+                  style={{ background: "var(--color-primary-light)" }}
+                  aria-hidden
+                >
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M5 13l4 4L19 7"
+                      stroke="var(--color-primary)"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <h2 className="mt-6 text-3xl font-semibold tracking-tight">
+                  Patient registered
+                </h2>
+                <p className="mt-3 text-[var(--color-text-muted)]">
+                  {patient?.name ? (
+                    <>
+                      <span className="font-medium text-[var(--color-text-main)]">
+                        {patient.name}
+                      </span>{" "}
+                      has been added successfully.
+                    </>
+                  ) : (
+                    "The patient has been added successfully."
+                  )}
+                </p>
+
+                {patient && (
+                  <div className="mt-6 w-full rounded-2xl bg-white/50 p-5 text-left">
+                    <dl className="grid grid-cols-2 gap-3 text-sm">
+                      {patient.patient_ic && (
+                        <Detail label="IC" value={String(patient.patient_ic)} />
+                      )}
+                      {patient.phone && (
+                        <Detail label="Phone" value={String(patient.phone)} />
+                      )}
+                      {patient.age !== undefined && (
+                        <Detail label="Age" value={String(patient.age)} />
+                      )}
+                      {patient.gender && (
+                        <Detail label="Gender" value={String(patient.gender)} />
+                      )}
+                    </dl>
+                  </div>
+                )}
+
+                <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
+                  <button
+                    onClick={openForm}
+                    className="btn-primary flex-1 rounded-full px-6 py-3.5 text-sm font-semibold uppercase"
+                  >
+                    Register Another
+                  </button>
+                  <button
+                    onClick={cancel}
+                    className="btn-ghost flex-1 rounded-full px-6 py-3.5 text-sm font-semibold uppercase"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleRegister}>
+                <div className="mb-8">
+                  <p className="label">New Patient</p>
+                  <h2 className="mt-2 text-3xl font-semibold tracking-tight">
+                    Register a new patient
+                  </h2>
+                  <p className="mt-2 text-sm text-[var(--color-text-muted)]">
+                    Fill in the details below and press register.
+                  </p>
+                </div>
+
+                <div className="space-y-5">
+                  <Field
+                    ref={firstFieldRef}
+                    id="patient_ic"
+                    label="Malaysian IC"
+                    placeholder="e.g. 900101-14-5678"
+                    value={form.patient_ic}
+                    onChange={(v) => update("patient_ic", v)}
+                    disabled={isSubmitting}
+                  />
+                  <Field
+                    id="name"
+                    label="Full Name"
+                    placeholder="e.g. Nur Aisyah binti Ahmad"
+                    value={form.name}
+                    onChange={(v) => update("name", v)}
+                    disabled={isSubmitting}
+                  />
+                  <Field
+                    id="phone"
+                    label="Phone"
+                    type="tel"
+                    placeholder="e.g. 012-345 6789"
+                    value={form.phone}
+                    onChange={(v) => update("phone", v)}
+                    disabled={isSubmitting}
+                  />
+                  <Field
+                    id="address"
+                    label="Address"
+                    placeholder="e.g. 12, Jalan Ampang, KL"
+                    value={form.address}
+                    onChange={(v) => update("address", v)}
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {status === "error" && (
+                  <p
+                    className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+                    role="alert"
+                  >
+                    {error}
+                  </p>
+                )}
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-primary flex flex-1 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold uppercase"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner" aria-hidden />
+                        Registering…
+                      </>
+                    ) : (
+                      "Register"
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={cancel}
+                    disabled={isSubmitting}
+                    className="btn-ghost flex-1 rounded-full px-6 py-3.5 text-sm font-semibold uppercase"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
       )}
-    </main>
+    </>
   );
 }
+
+/* ---------- Helpers ---------- */
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="label">{label}</dt>
+      <dd className="mt-1 font-medium text-[var(--color-text-main)]">{value}</dd>
+    </div>
+  );
+}
+
+interface FieldProps {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+  disabled?: boolean;
+}
+
+const Field = ({
+  ref,
+  id,
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  disabled,
+}: FieldProps & { ref?: React.Ref<HTMLInputElement> }) => (
+  <div>
+    <label htmlFor={id} className="label mb-2 block">
+      {label}
+    </label>
+    <input
+      ref={ref}
+      id={id}
+      name={id}
+      type={type}
+      required
+      value={value}
+      disabled={disabled}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+      className="field w-full rounded-2xl px-5 py-3.5 text-[var(--color-text-main)] disabled:opacity-60"
+    />
+  </div>
+);

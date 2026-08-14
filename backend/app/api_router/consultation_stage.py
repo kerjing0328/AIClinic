@@ -1,7 +1,7 @@
 from typing import Any
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
+
 
 from app.services.consultation_pipeline import (
     create_draft,
@@ -9,9 +9,10 @@ from app.services.consultation_pipeline import (
     set_ai_extracted,
     set_note_generated,
     set_doctor_approved,
+    get_consultation
 )
 
-from backend.app.services.supabase_conn import get_patient
+from app.services.supabase_conn import get_patient, update_row
 
 router = APIRouter(
     prefix="/consultations",
@@ -32,78 +33,73 @@ class TranscribedRequest(BaseModel):
 class AIExtractedRequest(BaseModel):
     extracted_json: dict[str, Any]
 
+class DoctorApprovedRequest(BaseModel):
+    extracted_data: dict[str, Any]
 
+# ===========================================================================
+# GET SINGLE CONSULTATION  (used by the frontend to read ai_extracted json)
+# ===========================================================================
+@router.get("/{consultation_id}")
+def get_consultation_endpoint(consultation_id: str):
+    """Fetch a single consultation record (including the ai_extracted json)."""
+    try:
+        consultation = get_consultation(consultation_id)
+        if not consultation:
+            raise HTTPException(status_code=404, detail="Consultation not found")
+        return {"success": True, "consultation": consultation}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+      
+# ===========================================================================
 # STAGE 1 — DRAFT
+# ===========================================================================
 @router.post("", status_code=201)
 def create_consultation(request: CreateConsultationRequest):
     """
     Create a new consultation.
 
-    Status:
-        draft
-
-    Creates:
-        patient_id
-        doctor_id
-        created_at
-        updated_at
+    Status: draft
     """
-
     try:
-        # Verify patient exists
         patient = get_patient(request.patient_id)
-
         if not patient:
-            raise HTTPException(
-                status_code=404,
-                detail="Patient not found",
-            )
+            raise HTTPException(status_code=404, detail="Patient not found")
 
         result = create_draft(
             patient_id=request.patient_id,
             doctor_id=request.doctor_id,
         )
-
         return {
             "success": True,
             "message": "Consultation created",
             "status": "draft",
             "consultation": result,
         }
-
     except HTTPException:
         raise
-
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=str(e),
-        )
+        raise HTTPException(status_code=500, detail=str(e))
 
+
+# ===========================================================================
 # STAGE 2 — TRANSCRIBED
+# ===========================================================================
 @router.patch("/{consultation_id}/transcribed")
-def mark_transcribed(
-    consultation_id: str,
-    request: TranscribedRequest,
-):
+def mark_transcribed(consultation_id: str, request: TranscribedRequest):
     """
     Attach transcript path.
 
-    Status:
-        transcribed
+    Status: transcribed
     """
-
     try:
         result = set_transcribed(
             consultation_id=consultation_id,
             transcript_path=request.transcript_path,
         )
-
         if not result:
-            raise HTTPException(
-                status_code=404,
-                detail="Consultation not found",
-            )
+            raise HTTPException(status_code=404, detail="Consultation not found")
 
         return {
             "success": True,
@@ -111,48 +107,46 @@ def mark_transcribed(
             "status": "transcribed",
             "consultation": result,
         }
-
     except HTTPException:
         raise
-
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=str(e),
-        )
+        raise HTTPException(status_code=500, detail=str(e))
 
+
+# ===========================================================================
 # STAGE 3 — AI EXTRACTED
+# ===========================================================================
 @router.patch("/{consultation_id}/ai-extracted")
-def mark_ai_extracted(
-    consultation_id: str,
-    request: AIExtractedRequest,
-):
-    """
-    Store AI-extracted consultation data.
+def mark_ai_extracted(consultation_id: str, background_tasks: BackgroundTasks):
+    consultation = get_consultation(consultation_id)
+    if not consultation:
+        raise HTTPException(404, "Consultation not found")
 
-    Status:
-        ai_extracted
+    # Flip to an in-progress status right away
+    update_row("consultations", consultation_id,
+               {"status": "extracting"}, id_column="id")
 
-    The extracted JSON should already contain
-    the injected demographics.
-    """
+    # Run the heavy work AFTER responding
+    background_tasks.add_task(set_ai_extracted, consultation_id)
 
+    return {"success": True, "status": "extracting"}  # returns in ms
+
+# GET extracted without trigger again stage 3
+@router.get("/{consultation_id}/ai-extracted")
+def get_ai_extracted(consultation_id: str):
     try:
-        result = set_ai_extracted(
-            consultation_id=consultation_id,
-        )
+        consultation = get_consultation(consultation_id)
 
-        if not result:
+        if not consultation:
             raise HTTPException(
                 status_code=404,
-                detail="Consultation not found",
+                detail="Consultation not found"
             )
 
         return {
             "success": True,
-            "message": "AI extracted data saved",
-            "status": "ai_extracted",
-            "consultation": result,
+            "status": consultation.get("status"),
+            "extracted_data": consultation.get("extracted_data"),
         }
 
     except HTTPException:
@@ -161,5 +155,34 @@ def mark_ai_extracted(
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=str(e),
+            detail=str(e)
         )
+
+# ===========================================================================
+# STAGE 4 — DOCTOR APPROVED
+# ===========================================================================
+@router.patch("/{consultation_id}/doctor-approved")
+def mark_doctor_approved(consultation_id: str, request: DoctorApprovedRequest):
+    """
+    Save the doctor-edited final note and mark the consultation approved.
+
+    Status: doctor_approved
+    """
+    try:
+        result = set_doctor_approved(
+            consultation_id=consultation_id,
+            extracted_data=request.extracted_data,
+        )
+        if not result:
+            raise HTTPException(status_code=404, detail="Consultation not found")
+
+        return {
+            "success": True,
+            "message": "Consultation approved",
+            "status": "doctor_approved",
+            "consultation": result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

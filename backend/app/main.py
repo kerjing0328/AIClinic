@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.services.supabase_conn import supabase
+from app.services.supabase_conn import supabase
 from app.api_router.create_patient_doctor import router as create_patient_doctor_router
 from app.api_router.consultation_stage import router as consultation_stage_router
+from app.api_router.consultation_report import router as consultation_report_router
 
 
 app = FastAPI(
@@ -12,7 +13,9 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "https://laughing-eureka-q5jjx476qwgc4xjp-3000.app.github.dev",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,3 +52,4 @@ def test_supabase():
 
 app.include_router(create_patient_doctor_router)
 app.include_router(consultation_stage_router)
+app.include_router(consultation_report_router)

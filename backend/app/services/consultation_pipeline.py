@@ -14,8 +14,8 @@ Manages the consultation lifecycle through status stages:
 import json
 from datetime import datetime
 from typing import Any, Optional
-from backend.app.services.supabase_conn import get_patient_demographics, insert_row, update_row, get_consultation
-from backend.app.services.extract_structured import extract_structured
+from app.services.supabase_conn import get_patient_demographics, insert_row, update_row, get_consultation
+from app.services.extract_structured import extract_structured
 
 
 def load_consultation_json(file_path: str) -> dict:
@@ -32,7 +32,7 @@ def save_consultation_json(consultation_json: dict, file_path: str) -> None:
 # Demographics injection
 def inject_demographics(consultation_json: dict, patient_id: Any) -> dict:
     """
-    Fetch and inject age and sex directly into the extracted_data block.
+    Fetch and inject age and gender directly into the extracted_data block.
 
     Args:
         consultation_json : the structured transcript JSON (dict)
@@ -52,9 +52,9 @@ def inject_demographics(consultation_json: dict, patient_id: Any) -> dict:
     if not demo:
         raise ValueError(f"No demographics found for patient_id={patient_id}")
 
-    # 2. Inject age and sex 
+    # 2. Inject age and gender 
     extracted_data["age"] = demo.get("age")
-    extracted_data["sex"] = demo.get("gender")
+    extracted_data["gender"] = demo.get("gender")
 
     return consultation_json
 
@@ -96,24 +96,42 @@ def set_transcribed(consultation_id: Any, transcript_path: str) -> dict:
     return update_row("consultations", consultation_id, data, id_column="id")
 
 
-# ---------------------------------------------------------------------------
-# STAGE 3 — ai_extracted: attach extracted_data JSON
-# ---------------------------------------------------------------------------
-
 def set_ai_extracted(consultation_id: Any) -> dict:
     """
-    Update the extracted_data column with the AI-extracted JSON
-    (demographics already injected). Advances status to 'ai_extracted'.
+    Extract structured consultation data from the transcript,
+    inject demographics, save to the consultation, and update status.
     """
-    TRANSCRIPT_PATH, PATIENT_ID = get_consultation(consultation_id).get("transcript"), get_consultation(consultation_id).get("patient_id")
-    structured_data = extract_structured(TRANSCRIPT_PATH)
-    structured_data_with_demographics = inject_demographics(structured_data, PATIENT_ID)
+
+    consultation = get_consultation(consultation_id)
+
+    if not consultation:
+        return {}
+
+    transcript_path = consultation.get("transcript")
+    patient_id = consultation.get("patient_id")
+
+    if not transcript_path:
+        raise ValueError("Consultation has no transcript")
+
+    structured_data = extract_structured(transcript_path)
+
+    structured_data_with_demographics = inject_demographics(
+        structured_data,
+        patient_id
+    )
+
     data = {
         "extracted_data": structured_data_with_demographics,
         "status": "ai_extracted",
         "updated_at": datetime.now().isoformat(),
     }
-    return update_row("consultations", consultation_id, data, id_column="id")
+
+    return update_row(
+        "consultations",
+        consultation_id,
+        data,
+        id_column="id"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -137,13 +155,13 @@ def set_note_generated(consultation_id: Any, final_note_placeholder: dict) -> di
 # STAGE 5 — doctor_approved: update final_note with reviewed content
 # ---------------------------------------------------------------------------
 
-def set_doctor_approved(consultation_id: Any, reviewed_final_note: dict) -> dict:
+def set_doctor_approved(consultation_id: Any, extracted_data: dict) -> dict:
     """
-    Update the final_note column with the doctor-reviewed JSON.
+    Update the extracted_data column with the doctor-reviewed JSON.
     Advances status to 'doctor_approved'.
     """
     data = {
-        "final_note": reviewed_final_note,
+        "extracted_data": extracted_data,
         "status": "doctor_approved",
         "updated_at": datetime.now().isoformat(),
     }
@@ -208,7 +226,7 @@ if __name__ == "__main__":
                 data = set_ai_extracted(consultation_id)
                 print(f"[ai_extracted]   extracted_data set "
                       f"(age={data['extracted_data']['age']}, "
-                      f"sex={data['extracted_data']['sex']})")
+                      f"gender={data['extracted_data']['gender']})")
                 #print(f"local copy saved to: {OUTPUT_FILE}")
 
             # ---- STAGE 4: note_generated ----

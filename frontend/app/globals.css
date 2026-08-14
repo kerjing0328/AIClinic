@@ -1,26 +1,207 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   Modern Health Clinic System — design tokens (design.md v1.0.0)
+   ============================================================ */
+@theme {
+  --color-background: #fafafa;
+  --color-primary: #065f46;
+  --color-primary-light: #d1fae5;
+  --color-text-main: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-accent-teal: #0d9488;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-panel: 40px;
+  --radius-full: 999px;
+
+  --animate-float: float 8s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(4%, -6%) scale(1.08);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:root {
+  --glow-emerald: rgba(167, 243, 208, 0.8);
+  --glow-sage: rgba(110, 161, 137, 0.4);
+  --glow-warm: rgba(253, 230, 234, 0.8);
+  --border-glass: rgba(255, 255, 255, 0.8);
 }
+
+html,
+body {
+  background: var(--color-background);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Background layer: grain + animated radial glows ---------- */
+.bg-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+.glow {
+  position: fixed;
+  border-radius: 999px;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+.glow-1 {
+  top: -10%;
+  left: -8%;
+  width: 42rem;
+  height: 42rem;
+  background: var(--glow-emerald);
+  animation: var(--animate-float);
+}
+.glow-2 {
+  bottom: -15%;
+  right: -10%;
+  width: 40rem;
+  height: 40rem;
+  background: var(--glow-sage);
+  animation: var(--animate-float);
+  animation-delay: -3s;
+}
+.glow-3 {
+  top: 30%;
+  right: 20%;
+  width: 28rem;
+  height: 28rem;
+  background: var(--glow-warm);
+  animation: var(--animate-float);
+  animation-delay: -5s;
+}
+
+/* ---------- Glass panel ---------- */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* ---------- Label (plain muted text — NOT the Tailwind `overline` utility) ---------- */
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Overline / label ---------- */
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Form fields ---------- */
+.field {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  outline: 1px solid rgba(6, 95, 70, 0);
+  transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field::placeholder {
+  color: var(--color-text-muted);
+}
+.field:focus {
+  outline-color: rgba(6, 95, 70, 0.55);
+  box-shadow: 0 0 0 4px rgba(209, 250, 229, 0.6);
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  letter-spacing: 0.1em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #054d39;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(6, 95, 70, 0.25);
+}
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: var(--color-text-main);
+  letter-spacing: 0.1em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-ghost:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+.btn-ghost:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ---------- Spinner ---------- */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 999px;
+  animation: spin 0.7s linear infinite;
+}
+.spinner-dark {
+  border: 2px solid rgba(6, 95, 70, 0.2);
+  border-top-color: var(--color-primary);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow,
+  .spinner {
+    animation: none;
+  }
+}
+
+

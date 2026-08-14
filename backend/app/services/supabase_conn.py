@@ -322,13 +322,6 @@ def approve_consultation(consultation_id: Any, final_note: dict,
     }
     return update_row("consultations", consultation_id, data, id_column="id")
 
-
-def update_consultation_status(consultation_id: Any, status: str) -> dict:
-    """Update just the workflow status (draft / reviewed / approved)."""
-    data = {"status": status, "updated_at": datetime.now().isoformat()}
-    return update_row("consultations", consultation_id, data, id_column="id")
-
-
 def delete_consultation(consultation_id: Any) -> bool:
     """Delete a consultation by id (demo/cleanup use)."""
     return delete_row("consultations", consultation_id, id_column="id")
