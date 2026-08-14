@@ -247,6 +247,12 @@ def update_patient(patient_id: Any, data: dict) -> dict:
 
     return update_row("patients", patient_id, data, id_column="id")
 
+
+def delete_patient(patient_id: Any) -> bool:
+    """Delete a patient by id."""
+    return delete_row("patients", patient_id, id_column="id")
+
+
 # ===========================================================================
 # DOMAIN HELPERS  —  DOCTORS
 # ===========================================================================

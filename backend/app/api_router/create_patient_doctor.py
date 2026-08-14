@@ -10,7 +10,9 @@ from app.services.supabase_conn import (
     get_doctor_by_email,
     get_all,
     update_patient,
+    delete_patient,
     get_consultations_by_patient,
+    get_consultations_by_doctor,
 )
 
 
@@ -140,7 +142,7 @@ def get_patients_endpoint(limit: Optional[int] = None):
 # GET SINGLE PATIENT (by id)
 # ===========================================================================
 @router.get("/patients/{patient_id}")
-def get_patient_endpoint(patient_id: int):
+def get_patient_endpoint(patient_id: str):
     """
     Fetch a single patient record by id.
     """
@@ -259,6 +261,34 @@ def update_patient_endpoint(patient_id: Any, request: UpdatePatientRequest):
 
 
 # ============================================================
+# DELETE PATIENT
+# ============================================================
+@router.delete("/patients/{patient_id}")
+def delete_patient_endpoint(patient_id: Any):
+    """
+    Delete a patient by id.
+    """
+    try:
+        existing = get_patient(patient_id)
+        if not existing:
+            raise HTTPException(status_code=404, detail="Patient not found")
+
+        deleted = delete_patient(patient_id)
+        if not deleted:
+            raise HTTPException(status_code=500, detail="Failed to delete patient")
+
+        return {
+            "success": True,
+            "message": "Patient deleted successfully",
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
 # GET CONSULTATIONS FOR A PATIENT
 # ============================================================
 @router.get("/patients/{patient_id}/consultations")
@@ -294,5 +324,35 @@ def signin_doctor_endpoint(request: DoctorSignInRequest):
 
     except HTTPException:
         raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# GET CONSULTATIONS FOR A DOCTOR
+# ============================================================
+@router.get("/doctors/{doctor_id}/consultations")
+def get_doctor_consultations_endpoint(doctor_id: Any):
+    """Return all consultations linked to a given doctor, with patient info joined."""
+    try:
+        consultations = get_consultations_by_doctor(doctor_id)
+
+        # Enrich each consultation with patient name and IC for display
+        enriched = []
+        for c in consultations:
+            patient = get_patient(c.get("patient_id"))
+            enriched.append({
+                **c,
+                "patient_name": patient.get("name") if patient else None,
+                "patient_ic": patient.get("patient_ic") if patient else None,
+            })
+
+        # Sort by most recent first
+        enriched.sort(
+            key=lambda x: x.get("consultation_date") or x.get("created_at") or "",
+            reverse=True,
+        )
+
+        return {"success": True, "consultations": enriched}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

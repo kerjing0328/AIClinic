@@ -178,6 +178,22 @@ body {
   cursor: not-allowed;
 }
 
+.btn-danger {
+  background: #b84343;
+  color: #fff;
+  letter-spacing: 0.1em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn-danger:hover:not(:disabled) {
+  background: #933a3a;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(220, 38, 38, 0.25);
+}
+.btn-danger:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* ---------- Spinner ---------- */
 .spinner {
   width: 16px;

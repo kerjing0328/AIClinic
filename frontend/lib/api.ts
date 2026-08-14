@@ -123,6 +123,12 @@ export function updatePatient(id: string | number, data: UpdatePatientRequest) {
     { method: "PUT", body: JSON.stringify(data) }
   );
 }
+export function deletePatient(id: string | number) {
+  return request<{ success: boolean; message: string }>(
+    `/patients/${encodeURIComponent(String(id))}`,
+    { method: "DELETE" }
+  );
+}
 export function getConsultationsByPatient(id: string | number) {
   return request<{ success: boolean; consultations: Consultation[] }>(
     `/patients/${encodeURIComponent(String(id))}/consultations`
@@ -151,6 +157,12 @@ export function getDoctor(id: string | number) {
     `/doctors/${encodeURIComponent(String(id))}`
   );
 }
+export function getConsultationsByDoctor(id: string | number) {
+  return request<{
+    success: boolean;
+    consultations: (Consultation & { patient_name?: string; patient_ic?: string })[];
+  }>(`/doctors/${encodeURIComponent(String(id))}/consultations`);
+}
 
 /* ============================================================
    Consultation pipeline
@@ -177,7 +189,7 @@ export function getConsultation(id: string | number) {
 }
 
 /** STAGE 2 — PATCH /consultations/{id}/transcribed → status: transcribed */
-export function setTranscribed(id: string | number, transcript_path: string) {
+export function setTranscribed(id: string | number, transcript_path: string, transcript_content: string = "") {
   return request<{
     success: boolean;
     message: string;
@@ -185,7 +197,7 @@ export function setTranscribed(id: string | number, transcript_path: string) {
     consultation: Consultation;
   }>(`/consultations/${encodeURIComponent(String(id))}/transcribed`, {
     method: "PATCH",
-    body: JSON.stringify({ transcript_path }),
+    body: JSON.stringify({ transcript_path, transcript_content }),
   });
 }
 
@@ -223,6 +235,14 @@ export function setDoctorApproved(
     method: "PATCH",
     body: JSON.stringify({ extracted_data }),
   });
+}
+
+/** DELETE /consultations/{id} — delete a consultation. */
+export function deleteConsultation(id: string | number) {
+  return request<{ success: boolean; message: string }>(
+    `/consultations/${encodeURIComponent(String(id))}`,
+    { method: "DELETE" }
+  );
 }
 
 /** Direct URL to the server-generated PDF report (open or download). */

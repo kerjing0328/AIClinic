@@ -12,7 +12,7 @@ from app.services.consultation_pipeline import (
     get_consultation
 )
 
-from app.services.supabase_conn import get_patient, update_row
+from app.services.supabase_conn import get_patient, update_row, delete_consultation
 
 router = APIRouter(
     prefix="/consultations",
@@ -28,6 +28,7 @@ class CreateConsultationRequest(BaseModel):
 
 class TranscribedRequest(BaseModel):
     transcript_path: str
+    transcript_content: str = ""
 
 
 class AIExtractedRequest(BaseModel):
@@ -51,7 +52,31 @@ def get_consultation_endpoint(consultation_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-      
+
+# ===========================================================================
+# DELETE CONSULTATION
+# ===========================================================================
+@router.delete("/{consultation_id}")
+def delete_consultation_endpoint(consultation_id: str):
+    """Delete a consultation by id."""
+    try:
+        consultation = get_consultation(consultation_id)
+        if not consultation:
+            raise HTTPException(status_code=404, detail="Consultation not found")
+
+        deleted = delete_consultation(consultation_id)
+        if not deleted:
+            raise HTTPException(status_code=500, detail="Failed to delete consultation")
+
+        return {
+            "success": True,
+            "message": "Consultation deleted successfully",
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ===========================================================================
 # STAGE 1 — DRAFT
 # ===========================================================================
@@ -97,6 +122,7 @@ def mark_transcribed(consultation_id: str, request: TranscribedRequest):
         result = set_transcribed(
             consultation_id=consultation_id,
             transcript_path=request.transcript_path,
+            transcript_content=request.transcript_content,
         )
         if not result:
             raise HTTPException(status_code=404, detail="Consultation not found")

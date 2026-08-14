@@ -15,7 +15,7 @@ import json
 from datetime import datetime
 from typing import Any, Optional
 from app.services.supabase_conn import get_patient_demographics, insert_row, update_row, get_consultation
-from app.services.extract_structured import extract_structured
+from app.services.extract_structured2 import extract_structured2
 
 
 def load_consultation_json(file_path: str) -> dict:
@@ -83,13 +83,15 @@ def create_draft(patient_id: Any, doctor_id: Any) -> dict:
 # STAGE 2 — transcribed: attach transcript path
 # ---------------------------------------------------------------------------
 
-def set_transcribed(consultation_id: Any, transcript_path: str) -> dict:
+def set_transcribed(consultation_id: Any, transcript_path: str, transcript_content: str = "") -> dict:
     """
     Update the transcript column with the transcript file path.
+    Also stores the full transcript text so it can be read back on resume.
     Advances status to 'transcribed'.
     """
     data = {
         "transcript": transcript_path,
+        "transcript_content": transcript_content,
         "status": "transcribed",
         "updated_at": datetime.now().isoformat(),
     }
@@ -113,7 +115,7 @@ def set_ai_extracted(consultation_id: Any) -> dict:
     if not transcript_path:
         raise ValueError("Consultation has no transcript")
 
-    structured_data = extract_structured(transcript_path)
+    structured_data = extract_structured2(transcript_path)
 
     structured_data_with_demographics = inject_demographics(
         structured_data,

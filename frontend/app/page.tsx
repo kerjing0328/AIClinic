@@ -88,21 +88,20 @@ export default function Home() {
       {/* Hero */}
       <section className="flex flex-1 flex-col items-center justify-center py-20 text-center">
         <p className="label mb-6" style={{ animation: "var(--animate-fade-up)" }}>
-          Patient Registration
+          Clinical Assistant
         </p>
         <h1
           className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl"
           style={{ animation: "var(--animate-fade-up)", animationDelay: "0.05s" }}
         >
-          Welcome patients in{" "}
+          Capture every consultation in{" "}
           <span className="text-[var(--color-primary)]">seconds</span>.
         </h1>
         <p
           className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--color-text-muted)]"
           style={{ animation: "var(--animate-fade-up)", animationDelay: "0.1s" }}
         >
-          Register a new patient at the front desk. Age and gender are derived
-          automatically from the Malaysian IC.
+          Let doctors talk to patients. AI handles the documentation.
         </p>
 
         <div
@@ -116,10 +115,10 @@ export default function Home() {
             Register Patient
           </button>
           <Link
-            href="/patients"
+            href="/consultation"
             className="btn-ghost rounded-full px-9 py-4 text-sm font-semibold uppercase"
           >
-            View Patients
+            Start Consultation
           </Link>
         </div>
       </section>
