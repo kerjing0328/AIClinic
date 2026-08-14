@@ -332,6 +332,8 @@ interface FieldProps {
   placeholder?: string;
   type?: string;
   disabled?: boolean;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  maxLength?: number;
 }
 
 const Field = ({

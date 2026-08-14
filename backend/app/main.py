@@ -15,6 +15,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://laughing-eureka-q5jjx476qwgc4xjp-3000.app.github.dev",
+        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
