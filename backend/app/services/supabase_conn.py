@@ -373,6 +373,29 @@ def insert_medical_references(rows: list[dict]) -> list[dict]:
         raise
 
 
+def match_medical_references(
+    query_embedding: list[float],
+    match_threshold: float = 0.5,
+    match_count: int = 5
+) -> list[dict]:
+    """Find semantically similar medical reference chunks."""
+    try:
+        response = supabase.rpc(
+            "match_medical_references",
+            {
+                "query_embedding": query_embedding,
+                "match_threshold": match_threshold,
+                "match_count": match_count
+            }
+        ).execute()
+
+        return response.data or []
+
+    except Exception as e:
+        print(f"[match_medical_references] Error searching medical references: {e}")
+        raise
+
+
 # ===========================================================================
 # Testing code block
 # ===========================================================================
