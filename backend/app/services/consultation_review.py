@@ -91,6 +91,7 @@ IMPORTANT SAFETY RULES:
 
 9. Do not overwhelm the doctor with generic advice.
    Suggestions should be specific to the consultation.
+   Keep the suggestion concise without too much unnecessary details.
 
 10. If there are no documented red flags, explicitly return an empty red_flags
     list. Do not manufacture one.
