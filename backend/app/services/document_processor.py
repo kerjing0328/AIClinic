@@ -240,6 +240,6 @@ if __name__ == "__main__":
     
     asyncio.run(
         process_medical_docs(
-            input_dir="data/medical_references",
+            input_dir="../data/medical_references",
         )
     )

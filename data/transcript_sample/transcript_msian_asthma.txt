@@ -1,0 +1,75 @@
+Doctor: Morning! Come in, have a seat. You look a bit breathless today, what's wrong ah?
+
+Patient: Morning doc. Ya lor, my asthma acting up again. Since yesterday night very hard to breathe.
+
+Doctor: Aiyo. Got the wheezing sound also?
+
+Patient: Got, got wheezing sound like a whistle when I breathe out. And my chest feel very tight. Keep coughing also, especially early morning cannot sleep.
+
+Doctor: Did you use your inhaler? The blue color one?
+
+Patient: Use already, doc. I puff three, four times last night, but it only help for a short while, then tight again.
+
+Doctor: Any trigger you know? You got catch a cold recently, or is it because of the haze outside?
+
+Patient: I think it's the haze lor, plus my office aircon damn cold and the carpet very dusty.
+
+Doctor: What about your preventer inhaler? The brown or purple one. Got use everyday or not?
+
+Patient: Aiya... honestly doc, I stopped using it last month because I felt okay already. I only use the blue one when I feel breathless.
+
+Doctor: Cannot like that lah! The preventer is to stop your airway from swelling up. The blue one is just a rescue inhaler, it only open up the airway temporarily but doesn't fix the swelling. If you don't use the preventer, of course it will act up like this.
+
+Patient: Ya lah, lesson learnt. It's just very troublesome to puff everyday when I feel fine.
+
+Doctor: Okay, come let me check your lungs and oxygen first. Take a deep breath.
+
+Doctor: Your oxygen level is 94%, a bit low. And your lungs got a lot of wheezing sound, both sides also tight. Your heart rate also quite fast because you are working hard to breathe.
+
+Patient: So how doc? Need to admit hospital is it?
+
+Doctor: No need hospital yet. Later I ask the nurse to give you nebulizer outside first. You need the gas machine to open up your airways properly. We see how you respond to it.
+
+Patient: Okay doc.
+
+Doctor: After the neb, I will check your lungs again. I also need to start you on a short course of oral steroids, Prednisolone, for 5 days. This one is very important to bring down the inflammation fast.
+
+Patient: Will got side effects or not? I heard steroids not good for body.
+
+Doctor: Short term 5 days only, usually okay one. Maybe you will feel a bit more hungry or harder to sleep, but you really need it now to stop the asthma attack. Most importantly, you must restart your preventer inhaler! Every day, morning and night, even if you feel good. Understand?
+
+Patient: Okay, can can. I will use it properly this time.
+
+Doctor: Go out to the treatment room first, the nurse will set up the nebulizer for you. After 15 minutes, come back in so I can listen to your chest again
+
+Doctor: Okay, come in, come in. How are you feeling now? Breathing easier already?
+
+Patient: Wah, much better doc. The gas really helped a lot. My chest doesn't feel so tight anymore, and I don't need to struggle to breathe.
+
+Doctor: Good, good. Come, let me listen to your lungs one more time. Take a deep breath... and breathe out... okay, one more time.
+
+Doctor: Ah, much clearer now. The wheezing sound has reduced a lot, and your oxygen level is back up to 98%. Your heart rate also slowed down to normal already.
+
+Patient: Nasib baik (Luckily) no need to go hospital. I was quite scared just now.
+
+Doctor: Ya lah, but you must take this seriously. Asthma is not something you can just ignore when you feel okay. I'm going to finalize your prescription now.
+
+Patient: Okay doc.
+
+Doctor: Listen carefully ah. For the Prednisolone steroids, I'm giving you 30mg a day for 5 days. Take it in the morning, immediately after your breakfast. Must take after food, otherwise it can cause gastric.
+
+Patient: Got it, morning after breakfast.
+
+Doctor: Then your brown preventer inhaler—2 puffs in the morning, 2 puffs at night. Every single day. Even next week when you feel 100% normal, you still puff. Don't stop unless I tell you to. After you puff the preventer, remember to gargle your mouth with water and spit it out to prevent sore throat or fungal infection.
+
+Patient: Okay, 2 puffs morning and night, then gargle. I will set my phone alarm this time so I don't forget.
+
+Doctor: Very good. Your blue inhaler, you just keep it with you on standby. Only use it if you feel the tightness coming back. If you find yourself needing the blue inhaler more than three times a week, you need to come back and see me, means your asthma still not fully controlled.
+
+Patient: Noted doc. Clear.
+
+Doctor: Here is your MC for today and tomorrow. Take this paper to the pharmacy counter outside to collect your medicine and pay. Rest well at home, close the windows if the haze is bad, and don't go and drink ice water first ah, later you trigger your cough again.
+
+Patient: Okay doc, thank you so much for your help.
+
+Doctor: No problem. Get plenty of rest and get well soon ah!
