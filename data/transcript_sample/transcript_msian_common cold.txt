@@ -1,0 +1,67 @@
+Doctor: Morning! How can I help you today? What's wrong ah?
+
+Patient: Morning, doc. Aiyo, I've been feeling quite sick the past few days lah. Got runny nose, cough a bit, and my throat damn sore. I have a very important work trip coming up in two days. Cannot afford to fall sick one! I was hoping you can just give me some antibiotics to clear this up.
+
+Doctor: I know lah, falling sick before travel is the worst. But let's check your symptoms first see how. When did it start?
+
+Patient: About three days ago lor. Started with a bit of sore throat and flu.
+
+Doctor: Out of 10, how bad is the pain and sickness now?
+
+Patient: Maybe a 4 like that? Not super bad, but very annoying leh.
+
+Doctor: Getting worse or same same?
+
+Patient: Sore throat about the same, but today my nose completely block already. Plus got dry cough here and there, and I feel so tired, man.
+
+Doctor: I see. Your mucus, what colour ah? Clear or got yellow/green?
+
+Patient: Transparent one.
+
+Doctor: Got fever, hard to breathe, or chest pain or not?
+
+Patient: No lah.
+
+Doctor: Face or ear got pain? Taste and smell still okay?
+
+Patient: Still okay. Just the block nose and throat only lor.
+
+Doctor: Okay. Got take any daily medicine? Any allergy to meds?
+
+Patient: No allergy. I only take my daily birth control pill. Other than that, fully healthy.
+
+Doctor: You smoke or drink?
+
+Patient: Don't smoke. I'm in sales, so drink a bit during networking lah, maybe a glass of wine like that, but that's all.
+
+Doctor: Okay, come let me check you a bit. I check your vitals, look into your throat, ears, and listen to your lungs.
+
+Doctor: Temperature normal lah, 37.2°C only. Blood pressure 118/76 and oxygen also okay. Throat got a bit red, but no pus. Nose got clear fluid, ears okay, lungs also clear.
+
+Patient: So just a normal cold is it? Doc, can just give me the antibiotics so I can bring on my trip?
+
+Doctor: Ah, based on your symptoms and check-up, this is just a normal viral infection—just a normal cold. Because it's a virus, antibiotics actually won't work one leh. Antibiotics only kill bacteria, not virus.
+
+Patient: I know lah, but I very stressed about my work trip. I feel like normally antibiotics will help me recover faster. Can just give a short course just in case? I really need to be 100% for this trip, seriously cannot mess up.
+
+Doctor: Aiyo, I understand you are very anxious about the trip. Even though I very sure this is just a virus, since you travelling and so worried, I just prescribe you a short 5-day course of Amoxicillin lah. But you must know it might not actually speed up your recovery from the virus hor.
+
+Patient: Wah, thank you so much doc. Really appreciate it!
+
+Doctor: This Amoxicillin 500mg, you take one capsule three times a day for 5 days. Very important ah—you must finish the whole 5-day course, even if you feel better midway, understand?
+
+Patient: Okay, can.
+
+Doctor: For your actual symptoms, I give you some antihistamine like Loratadine to take once a day, help to dry up the runny nose. I also give you Ibuprofen 400mg, you can take if your body ache or throat pain, but remember to take after food ah, if not later gastric.
+
+Patient: Okay, I go collect from the pharmacy outside.
+
+Doctor: Remember to drink plenty of water and rest well. Can also try breathe in hot steam at home, very good to clear the blocked nose.
+
+Patient: I try the steam tonight lah.
+
+Doctor: Last thing, you monitor yourself. If suddenly get high fever, hard to breathe, chest pain, or allergic reaction to the antibiotics—like skin got rash, swelling, or cannot breathe—stop the medicine and quickly go clinic straight away. Otherwise, just come back if symptoms get worse or still haven't recover after you finish the antibiotics.
+
+Patient: Understood doc. Thanks again for understanding about my trip!
+
+Doctor: No problem. Have a safe flight and get well soon ah!
