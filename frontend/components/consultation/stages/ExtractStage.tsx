@@ -92,7 +92,7 @@ export default function ExtractStage({
                 </>
               ) : (
                 <>Transcript attached ✓ — ready to extract. This typically takes about
-                <span className="font-semibold text-[var(--color-text-main)]"> 3 minutes</span>.</>
+                <span className="font-semibold text-[var(--color-text-main)]"> 1-2 minutes</span>.</>
               )}
             </div>
             {error && (
@@ -127,7 +127,7 @@ export default function ExtractStage({
 
             <p className="mt-4 flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
               <span className="spinner spinner-dark" aria-hidden />
-              Expected ~3 minutes. Please wait — do not close this window.
+              Expected ~1-2 minutes. Please wait — do not close this window.
             </p>
           </div>
         )}

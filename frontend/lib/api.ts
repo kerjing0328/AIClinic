@@ -57,6 +57,39 @@ export interface CreatePatientRequest {
 }
 export type UpdatePatientRequest = Partial<CreatePatientRequest>;
 
+/* ---- AI review types (POST /consultations/{id}/ai-review) ---- */
+export interface AiReviewItem {
+  severity?: string;
+  finding?: string;
+  reason?: string;
+  recommended_action?: string;
+  information?: string;
+  why_it_matters?: string;
+  category?: string;
+  suggestion?: string;
+}
+
+export interface AiReviewContent {
+  overall_risk?: string;
+  requires_prompt_doctor_review?: boolean;
+  red_flags?: AiReviewItem[];
+  clinical_concerns?: AiReviewItem[];
+  missing_information?: AiReviewItem[];
+  doctor_suggestions?: AiReviewItem[];
+  safety_netting_suggestions?: (string | AiReviewItem)[];
+  summary?: string;
+}
+
+export interface AiReviewReference {
+  content?: string;
+  similarity?: number | null;
+}
+
+export interface AiReviewPayload {
+  review?: AiReviewContent;
+  references?: AiReviewReference[];
+}
+
 /* ============================================================
    Core fetch helper
    ============================================================ */
@@ -213,6 +246,19 @@ export function setAiExtracted(id: string | number) {
   });
 }
 
+/** PATCH /consultations/{id}/extracted-data — save edited extracted data without changing status. */
+export function saveExtractedData(id: string | number, extracted_data: Record<string, unknown>) {
+  return request<{
+    success: boolean;
+    message: string;
+    status: string;
+    consultation: Consultation;
+  }>(`/consultations/${encodeURIComponent(String(id))}/extracted-data`, {
+    method: "PATCH",
+    body: JSON.stringify({ extracted_json: extracted_data }),
+  });
+}
+
 /** STAGE 3 (read) — GET /consultations/{id}/ai-extracted (no re-trigger) */
 export function getAiExtracted(id: string | number) {
   return request<{
@@ -221,6 +267,28 @@ export function getAiExtracted(id: string | number) {
     extracted_data: Record<string, unknown> | null;
   }>(`/consultations/${encodeURIComponent(String(id))}/ai-extracted`);
 }
+
+/** STAGE 4 — POST /consultations/{id}/ai-review — generate and store an AI clinical review. */
+export function generateAiReview(id: string | number) {
+  return request<{
+    success: boolean;
+    message: string;
+    status: string;
+    review: AiReviewPayload | null;
+  }>(`/consultations/${encodeURIComponent(String(id))}/ai-review`, {
+    method: "POST",
+  });
+}
+
+/** GET /consultations/{id}/ai-review — fetch a stored AI review (read-only). */
+export function getAiReview(id: string | number) {
+  return request<{
+    success: boolean;
+    status: string;
+    review: AiReviewPayload | null;
+  }>(`/consultations/${encodeURIComponent(String(id))}/ai-review`);
+}
+
 /** STAGE 5 — PATCH /consultations/{id}/doctor-approved → status: doctor_approved */
 export function setDoctorApproved(
   id: string | number,

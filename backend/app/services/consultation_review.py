@@ -174,7 +174,7 @@ class ConsultationReview:
     def __init__(
         self,
         embedding_model_id: str = "BAAI/bge-small-en-v1.5",
-        gemini_model: str = "gemini-3.5-flash",
+        gemini_model: str = "gemini-3.5-flash-lite",
     ):
         self.document_search = DocumentSearch(
             embedding_model_id=embedding_model_id

@@ -35,12 +35,28 @@ export function statusDisplay(status: string): {
       return { label: "Extracting…", color: { bg: "#e0e7ff", fg: "#3730a3" } };
     case "ai_extracted":
       return { label: "Ready for Review", color: { bg: "#d1fae5", fg: "#065f46" } };
+    case "ai_reviewed":
+      return { label: "Ready for Review", color: { bg: "#d1fae5", fg: "#065f46" } };
     case "doctor_approved":
     case "approved":
       return { label: "Approved", color: { bg: "#d1fae5", fg: "#065f46" } };
     default:
       return { label: status, color: { bg: "#f3f4f6", fg: "#374151" } };
   }
+}
+
+/* ============================================================
+   Status classification helpers
+   ============================================================ */
+const INCOMPLETE_STATUSES = ["draft", "transcribed", "extracting", "ai_extracted"];
+const COMPLETE_STATUSES = ["ai_reviewed", "doctor_approved", "approved"];
+
+export function isIncomplete(status: string): boolean {
+  return INCOMPLETE_STATUSES.includes(status);
+}
+
+export function isComplete(status: string): boolean {
+  return COMPLETE_STATUSES.includes(status);
 }
 
 /* ============================================================
@@ -54,6 +70,7 @@ export function resumeStageFromStatus(status: string): Stage {
       return "extract";
     case "ai_extracted":
     case "extracting":
+    case "ai_reviewed":
       return "review";
     case "doctor_approved":
     case "approved":

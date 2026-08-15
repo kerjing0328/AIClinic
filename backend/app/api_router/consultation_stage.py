@@ -7,6 +7,7 @@ from app.services.consultation_pipeline import (
     create_draft,
     set_transcribed,
     set_ai_extracted,
+    save_extracted_data,
     set_ai_reviewed,
     set_doctor_approved,
     get_consultation
@@ -187,6 +188,33 @@ def get_ai_extracted(consultation_id: str):
 # ===========================================================================
 # STAGE 4 — AI REVIEWED
 # ===========================================================================
+
+@router.patch("/{consultation_id}/extracted-data")
+def update_extracted_data(consultation_id: str, request: AIExtractedRequest):
+    """
+    Save edited extracted_data without changing status.
+    Used before AI review to persist the doctor's field edits.
+    """
+    try:
+        consultation = get_consultation(consultation_id)
+        if not consultation:
+            raise HTTPException(status_code=404, detail="Consultation not found")
+
+        result = save_extracted_data(consultation_id, request.extracted_json)
+        if not result:
+            raise HTTPException(status_code=500, detail="Failed to save extracted data")
+
+        return {
+            "success": True,
+            "message": "Extracted data saved",
+            "status": consultation.get("status"),
+            "consultation": result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/{consultation_id}/ai-review")
 def generate_ai_review(consultation_id: str):

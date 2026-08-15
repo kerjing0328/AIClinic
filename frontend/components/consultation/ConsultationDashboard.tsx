@@ -63,7 +63,7 @@ export default function ConsultationDashboard({ doctorId }: { doctorId: string }
     if (filterStatus !== "all") {
       const status = (c.status as string) ?? "";
       if (filterStatus === "incomplete" && !["draft", "transcribed", "extracting", "ai_extracted"].includes(status)) return false;
-      if (filterStatus === "approved" && !["doctor_approved", "approved"].includes(status)) return false;
+      if (filterStatus === "approved" && !["ai_reviewed", "doctor_approved", "approved"].includes(status)) return false;
       if (filterStatus === "draft" && status !== "draft") return false;
       if (filterStatus === "transcribed" && status !== "transcribed") return false;
       if (filterStatus === "ai_extracted" && status !== "ai_extracted") return false;

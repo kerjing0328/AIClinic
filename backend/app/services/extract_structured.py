@@ -91,14 +91,13 @@ IMPORTANT RULES:
 Return exactly this JSON structure:
 
 {
-  "extracted_data": {
     "type": "new",
     "age": null,
     "gender": "",
     "chief_complaint": "",
 
     "SOAP": {
-      "subjective": {
+        "subjective": {
         "history": {
             "onset": "",
             "duration": "",
@@ -113,38 +112,37 @@ Return exactly this JSON structure:
         "social_history": ""
         }
 
-      "objective": {
+        "objective": {
         "vital_signs": {
-          "temperature": null,
-          "blood_pressure": "",
-          "heart_rate": null,
-          "respiratory_rate": null,
-          "oxygen_saturation": null,
-          "weight": null
+            "temperature": null,
+            "blood_pressure": "",
+            "heart_rate": null,
+            "respiratory_rate": null,
+            "oxygen_saturation": null,
+            "weight": null
         },
         "examination": ""
-      },
+        },
 
-      "assessment": {
+        "assessment": {
         "diagnosis": [],
         "clinical_impression": ""
-      },
+        },
 
-      "plan": {
+        "plan": {
         "medications": [],
         "treatment": [],
         "referral": [],
         "follow_up": "",
         "safety_netting": [],
         "patient_instructions": []
-      }
+        }
     },
 
     "investigations": {
-      "ordered": [],
-      "results": []
+        "ordered": [],
+        "results": []
     }
-  }
 }
 """
 
@@ -187,7 +185,7 @@ def extract_structured(transcript_file: str) -> dict:
 
     # Call Gemini
     interaction = client.interactions.create(
-        model="gemini-3.5-flash",
+        model="gemini-3.5-flash-lite",
         system_instruction=SYSTEM_PROMPT,
         input=(
             "Extract structured clinical data from the following "

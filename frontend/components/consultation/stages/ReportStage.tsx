@@ -1,7 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { consultationKey, downloadConsultationReport, type Consultation } from "@/lib/api";
+import {
+  consultationKey,
+  downloadConsultationReport,
+  type Consultation,
+  type AiReviewContent,
+  type AiReviewItem,
+} from "@/lib/api";
 import { flatten, childrenOf, lastSeg, prettyLabel } from "@/lib/consultation-utils";
 
 export default function ReportStage({
@@ -31,6 +37,15 @@ export default function ReportStage({
       src = (src as Record<string, unknown>).extracted_data as Record<string, unknown>;
     }
     return src;
+  }, [consultation]);
+
+  const aiReview = useMemo<AiReviewContent | null>(() => {
+    const raw = consultation.ai_review as Record<string, unknown> | undefined;
+    if (!raw || typeof raw !== "object") return null;
+    if ("review" in raw && typeof (raw as Record<string, unknown>).review === "object") {
+      return (raw as Record<string, unknown>).review as AiReviewContent;
+    }
+    return raw as unknown as AiReviewContent;
   }, [consultation]);
 
   const fields = useMemo(() => flatten(note), [note]);
@@ -187,6 +202,82 @@ export default function ReportStage({
             ReadGroup("", 0)
           )}
         </div>
+
+        {/* AI Review (if previously generated) */}
+        {aiReview && (
+          <div className="mt-8 rounded-3xl border border-white/60 bg-white/30 p-6">
+            <div className="mb-4 flex items-center gap-2.5 border-b border-white/60 pb-3">
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
+                style={{ background: "var(--color-primary-light)" }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2l1.9 5.1L19 9l-5.1 1.9L12 16l-1.9-5.1L5 9l5.1-1.9L12 2z"
+                    stroke="var(--color-primary)"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <div>
+                <h3 className="text-lg font-semibold tracking-tight">AI Review</h3>
+                <p className="text-xs text-[var(--color-text-muted)]">
+                  Second-pass clinical safety review
+                </p>
+              </div>
+              {aiReview.overall_risk && (
+                <span className="ml-auto rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-primary)]">
+                  {aiReview.overall_risk} risk
+                </span>
+              )}
+            </div>
+
+            {aiReview.summary && (
+              <p className="mb-4 text-sm leading-relaxed text-[var(--color-text-main)]">
+                {aiReview.summary}
+              </p>
+            )}
+
+            {aiReview.red_flags && aiReview.red_flags.length > 0 && (
+              <div className="mt-4">
+                <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-red-600">
+                  Red Flags
+                </h4>
+                <ul className="space-y-2">
+                  {aiReview.red_flags.map((rf: AiReviewItem, i: number) => (
+                    <li key={i} className="rounded-2xl border border-white/70 bg-white/50 p-3">
+                      {rf.finding && (
+                        <p className="text-sm font-medium text-[var(--color-text-main)]">
+                          {rf.finding}
+                        </p>
+                      )}
+                      {rf.reason && (
+                        <p className="mt-1 text-xs text-[var(--color-text-muted)]">{rf.reason}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {aiReview.doctor_suggestions && aiReview.doctor_suggestions.length > 0 && (
+              <div className="mt-4">
+                <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-primary)]">
+                  Suggestions
+                </h4>
+                <ul className="space-y-2">
+                  {aiReview.doctor_suggestions.map((s: AiReviewItem, i: number) => (
+                    <li key={i} className="rounded-2xl border border-white/70 bg-white/50 p-3 text-sm text-[var(--color-text-main)]">
+                      {s.suggestion ?? s.finding ?? ""}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Navigation buttons outside card */}

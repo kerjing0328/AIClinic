@@ -1,7 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { setDoctorApproved, consultationKey, type Consultation } from "@/lib/api";
+import {
+  setDoctorApproved,
+  saveExtractedData,
+  generateAiReview,
+  consultationKey,
+  type Consultation,
+  type AiReviewPayload,
+} from "@/lib/api";
 import {
   flatten,
   unflatten,
@@ -13,6 +20,7 @@ import {
   prettyPath,
   SAMPLE_EXTRACTED,
 } from "@/lib/consultation-utils";
+import AiReviewPanel from "./AiReviewPanel";
 
 export default function ReviewStage({
   consultation,
@@ -59,6 +67,22 @@ export default function ReviewStage({
     [fields]
   );
   const hasRedFlags = redFlags.length > 0;
+
+  function handleSaveAndReview(
+    onSaved: (review: AiReviewPayload) => void,
+    onError: (message: string) => void
+  ) {
+    const id = consultationKey(consultation);
+    const extractedData = unflatten(fields);
+
+    saveExtractedData(id, extractedData)
+      .then(() => generateAiReview(id))
+      .then((res) => {
+        if (res.review) onSaved(res.review);
+        else onError("AI review returned no data.");
+      })
+      .catch((err) => onError(err instanceof Error ? err.message : "Failed to generate AI review."));
+  }
 
   async function handleSave() {
     setAttempted(true);
@@ -232,18 +256,32 @@ export default function ReviewStage({
           </div>
         </div>
 
-        {attempted && hasRedFlags && (
-          <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
-            <p className="text-sm font-semibold text-red-700">Missing mandatory information:</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-red-700">
-              {redFlags.map((k) => (
-                <li key={k}>{prettyPath(k)}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <div className="mt-8 grid gap-8 lg:grid-cols-3">
+          {/* 2/3 — editable extracted data */}
+          <div className="lg:col-span-2">
+            {attempted && hasRedFlags && (
+              <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
+                <p className="text-sm font-semibold text-red-700">Missing mandatory information:</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-red-700">
+                  {redFlags.map((k) => (
+                    <li key={k}>{prettyPath(k)}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-        <div className="mt-8">{renderGroup("", 0)}</div>
+            {renderGroup("", 0)}
+          </div>
+
+          {/* 1/3 — AI suggestions */}
+          <div className="lg:col-span-1">
+            <AiReviewPanel
+              consultation={consultation}
+              canGenerate={!hasRedFlags}
+              onSaveAndReview={handleSaveAndReview}
+            />
+          </div>
+        </div>
 
         {error && (
           <p className="mt-6 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">

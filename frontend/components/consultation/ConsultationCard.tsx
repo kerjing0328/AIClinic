@@ -1,7 +1,7 @@
 "use client";
 
 import { consultationKey, type Consultation } from "@/lib/api";
-import { extractDiagnosis, statusDisplay } from "@/lib/consultation-utils";
+import { extractDiagnosis, statusDisplay, isIncomplete, isComplete } from "@/lib/consultation-utils";
 
 type ConsultationWithPatient = Consultation & {
   patient_name?: string;
@@ -17,8 +17,8 @@ interface ConsultationCardProps {
 export default function ConsultationCard({ consultation, onResume, onDelete }: ConsultationCardProps) {
   const status = (consultation.status as string) || "draft";
   const { label: statusLabel, color } = statusDisplay(status);
-  const isIncomplete = ["draft", "transcribed", "extracting", "ai_extracted"].includes(status);
-  const isApproved = ["doctor_approved", "approved"].includes(status);
+  const incomplete = isIncomplete(status);
+  const complete = isComplete(status);
 
   const dateStr = consultation.consultation_date
     ? new Date(consultation.consultation_date).toLocaleDateString("en-MY", {
@@ -71,7 +71,7 @@ export default function ConsultationCard({ consultation, onResume, onDelete }: C
             <span className="text-[var(--color-text-muted)]">{diagnosis}</span>
           </p>
         )}
-        {!hasDiagnosis && isIncomplete && (
+        {!hasDiagnosis && incomplete && (
           <p className="mt-2 text-xs text-[var(--color-text-muted)]">
             {status === "draft" && "Patient selected — ready to upload transcript."}
             {status === "transcribed" && "Transcript attached — ready for AI extraction."}
@@ -79,7 +79,7 @@ export default function ConsultationCard({ consultation, onResume, onDelete }: C
             {status === "ai_extracted" && "Data extracted — ready for your review."}
           </p>
         )}
-        {!hasDiagnosis && isApproved && (
+        {!hasDiagnosis && complete && (
           <p className="mt-2 text-xs text-[var(--color-text-muted)]">
             Consultation completed and approved.
           </p>
@@ -87,7 +87,7 @@ export default function ConsultationCard({ consultation, onResume, onDelete }: C
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        {isIncomplete && (
+        {incomplete && (
           <button
             onClick={() => onResume(consultation)}
             className="btn-primary flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold uppercase"
@@ -104,7 +104,7 @@ export default function ConsultationCard({ consultation, onResume, onDelete }: C
             Resume
           </button>
         )}
-        {isApproved && (
+        {complete && (
           <button
             onClick={() => onResume(consultation)}
             className="btn-ghost flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold uppercase"

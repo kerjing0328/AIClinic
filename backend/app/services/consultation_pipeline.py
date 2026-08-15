@@ -47,16 +47,14 @@ def inject_demographics(consultation_json: dict, patient_id: Any) -> dict:
     Raises:
         ValueError if demographics cannot be found for the patient.
     """
-    extracted_data = consultation_json.setdefault("extracted_data", {})
-
     # 1. Fetch demographics (age + gender only — LLM-safe)
     demo = get_patient_demographics(patient_id)
     if not demo:
         raise ValueError(f"No demographics found for patient_id={patient_id}")
 
     # 2. Inject age and gender 
-    extracted_data["age"] = demo.get("age")
-    extracted_data["gender"] = demo.get("gender")
+    consultation_json["age"] = demo.get("age")
+    consultation_json["gender"] = demo.get("gender")
 
     return consultation_json
 
@@ -99,7 +97,9 @@ def set_transcribed(consultation_id: Any, transcript_path: str, transcript_conte
     }
     return update_row("consultations", consultation_id, data, id_column="id")
 
-
+# ---------------------------------------------------------------------------
+# STAGE 3 — ai_extracted: extract structured data
+# ---------------------------------------------------------------------------
 def set_ai_extracted(consultation_id: Any) -> dict:
     """
     Extract structured consultation data from the transcript,
@@ -141,6 +141,19 @@ def set_ai_extracted(consultation_id: Any) -> dict:
 # ---------------------------------------------------------------------------
 # STAGE 4 — ai_reviewed: run AI review and store result
 # ---------------------------------------------------------------------------
+
+def save_extracted_data(consultation_id: Any, extracted_data: dict) -> dict:
+    """
+    Save edited extracted_data without changing status.
+    Called before AI review so the reviewer sees the latest edits.
+    """
+    data = {
+        "extracted_data": extracted_data,
+        "updated_at": datetime.now().isoformat(),
+    }
+    return update_row("consultations", consultation_id, data, id_column="id")
+
+
 def set_ai_reviewed(consultation_id: Any) -> dict:
     """
     Run the AI clinical review on the extracted_data, store the review
@@ -157,6 +170,7 @@ def set_ai_reviewed(consultation_id: Any) -> dict:
 
     # Call the review service (Gemini + medical references).
     review_result = review_consultation({"extracted_data": extracted_data})
+    print(f"AI review result: {review_result}")
 
     data = {
         "ai_review": review_result,
@@ -248,7 +262,7 @@ if __name__ == "__main__":
 
             # ---- STAGE 4: ai_reviewed ----
             elif choice == "4":
-                result = set_ai_review(consultation_id)
+                result = set_ai_reviewed(consultation_id)
                 print(f"[ai_reviewed]    review stored "
                       f"(risk={result.get('ai_review', {}).get('review', {}).get('overall_risk', '?')})")
 
