@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AI Clinic Assistant",
+  title: "Notedr.",
   description: "Patient registration, management and doctor consultations.",
 };
 

@@ -194,7 +194,7 @@ def _build_pdf(consultation: dict, patient: dict | None) -> bytes:
 
     # ---- Header
     story.append(Paragraph("Consultation Report", h1))
-    story.append(Paragraph("AI Clinic Assistant", small))
+    story.append(Paragraph("Notedr.", small))
     story.append(Spacer(1, 6))
     story.append(HRFlowable(width="100%", thickness=1, color=LIGHT))
     story.append(Spacer(1, 8))

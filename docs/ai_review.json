@@ -1,0 +1,52 @@
+{
+  "review": {
+    "summary": "This is a 23-year-old Female presenting with a 5-day history of sore throat and a 4-day history of cough, along with nasal congestion, sneezing, mild headache, and fatigue. Objective examination shows a mild throat redness, clear nasal discharge, tenderness around neck glands, and clear lung sounds with normal vital signs. Findings are consistent with a viral upper respiratory tract infection in a patient with mild asthma. No red flags are documented. Standard supportive care, appropriate follow-up parameters, and robust safety-netting are already in place.",
+    "red_flags": [],
+    "overall_risk": "low",
+    "clinical_concerns": [
+      {
+        "reason": "Nocturnal cough can sometimes indicate poorly controlled asthma or airway hyper-reactivity triggered by a viral upper respiratory infection, even though current vital signs and chest examination are clear.",
+        "finding": "Cough worse at night in a patient with a history of mild asthma",
+        "recommended_action": "Monitor asthma symptoms closely and remind the patient when to seek urgent care if breathing worsens or inhaler use needs to increase."
+      }
+    ],
+    "doctor_suggestions": [
+      {
+        "reason": "Ensure the patient knows how to appropriately manage potential asthma symptoms triggered by the viral infection, and confirm whether any preventer therapy adjustment is necessary.",
+        "category": "medication_review",
+        "suggestion": "Review current asthma inhaler regimen"
+      },
+      {
+        "reason": "Advise the patient on specific signs of asthma exacerbation (such as wheezing, chest tightness, or increased reliance on rescue inhalers) alongside the general red flags already provided.",
+        "category": "safety_netting",
+        "suggestion": "Reiterate asthma-specific safety-netting"
+      }
+    ],
+    "missing_information": [
+      {
+        "information": "Smoking pack-year history or exact frequency of secondhand smoke exposure",
+        "why_it_matters": "Although social history notes never smoked, detailed environmental or occupational exposures can sometimes contribute to persistent or nocturnal cough."
+      },
+      {
+        "information": "Current baseline control and specific type of asthma inhaler used",
+        "why_it_matters": "Knowing whether the patient uses a short-acting beta-agonist alone or a maintenance controller inhaler helps assess asthma stability during a respiratory infection."
+      }
+    ],
+    "safety_netting_suggestions": [
+      "Seek medical attention urgently if difficulty breathing develops.",
+      "Seek medical attention urgently if chest pain develops.",
+      "Seek medical attention urgently if coughing up blood.",
+      "Seek medical attention urgently if severe difficulty swallowing develops.",
+      "Seek medical attention urgently if a persistent high fever develops.",
+      "Seek medical attention urgently if suddenly getting much worse.",
+      "Seek medical attention if asthma symptoms increase or rescue inhaler use becomes more frequent."
+    ],
+    "requires_prompt_doctor_review": false
+  },
+  "references": [
+    {
+      "content": "Common cold, Symptom onset = Gradual. Common cold, Cough = Common, dry. Common cold, Sore throat = Common. Common cold, Fever = None or low grade. Common cold, Rhinorrhea = Common. Common cold, Aches = Mild. Common cold, Watery eyes = Common. Common cold, Sneezing = Common. Common cold, Nasal congestion = Common. Common cold, Headache = Common, mild. Common cold, Shortness of breath = Uncommon.",
+      "similarity": 0.682779588367988
+    }
+  ]
+}

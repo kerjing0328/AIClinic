@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { getPatients, deletePatient, patientKey, type Patient } from "@/lib/api";
 import RecordCount from "@/components/shared/RecordCount";
 import PatientRow from "./PatientRow";
 import ViewModal from "./ViewModal";
 import EditModal from "./EditModal";
+import RegisterPatientModal from "./RegisterPatientModal";
 
 type ModalMode = "view" | "edit" | null;
 
@@ -20,6 +20,7 @@ export default function PatientsList() {
 
   const [selected, setSelected] = useState<Patient | null>(null);
   const [mode, setMode] = useState<ModalMode>(null);
+  const [showRegister, setShowRegister] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -57,6 +58,11 @@ export default function PatientsList() {
     );
     setSelected(updated);
     setMode("view");
+  }
+
+  function handleRegistered(newPatient: Patient) {
+    setPatients((prev) => [...prev, newPatient]);
+    setShowRegister(false);
   }
 
   async function handleDelete(p: Patient) {
@@ -112,6 +118,20 @@ export default function PatientsList() {
                   consultation history.
                 </p>
               </div>
+              <button
+                onClick={() => setShowRegister(true)}
+                className="btn-primary flex items-center gap-2 self-start rounded-full px-6 py-3 text-sm font-semibold uppercase sm:self-auto"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path
+                    d="M12 5v14M5 12h14"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                Add Patient
+              </button>
             </div>
 
             {/* Search */}
@@ -164,12 +184,12 @@ export default function PatientsList() {
                       : "Register your first patient to get started."}
                   </p>
                   {!query && (
-                    <Link
-                      href="/"
+                    <button
+                      onClick={() => setShowRegister(true)}
                       className="btn-primary mt-6 inline-block rounded-full px-7 py-3.5 text-sm font-semibold uppercase"
                     >
                       Create Patient
-                    </Link>
+                    </button>
                   )}
                 </div>
               ) : (
@@ -263,6 +283,11 @@ export default function PatientsList() {
       {mode === "edit" && selected && (
         <EditModal patient={selected} onClose={closeModal} onSaved={handleSaved} />
       )}
+      <RegisterPatientModal
+        open={showRegister}
+        onClose={() => setShowRegister(false)}
+        onRegistered={handleRegistered}
+      />
     </>
   );
 }

@@ -38,7 +38,7 @@ export default function Navbar() {
             </svg>
           </span>
           <span className="hidden text-sm font-semibold tracking-tight text-[var(--color-primary)] sm:block">
-            AI Clinic Assistant
+            Notedr.
           </span>
         </Link>
 

@@ -40,10 +40,11 @@
     }
   },
   "type": "new",
-  "gender": "male",
+  "gender": "Male",
   "investigations": {
     "ordered": "",
     "results": "Home COVID-19 test: Negative (completed 2 days ago)"
   },
   "chief_complaint": "Cough and sore throat"
 }
+

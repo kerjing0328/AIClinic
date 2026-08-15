@@ -175,7 +175,7 @@ def derive_from_ic(ic: str) -> dict:
     Derive age and gender from a Malaysian IC number.
     Format: YYMMDD-PB-###G  (e.g. '800315-14-5237')
       - YYMMDD  -> date of birth  -> age
-      - last digit (G): odd = male, even = female
+      - last digit (G): odd = Male, even = Female
     Returns: {"age": int, "gender": str}
     """
     digits = "".join(c for c in ic if c.isdigit())
@@ -195,7 +195,7 @@ def derive_from_ic(ic: str) -> dict:
     today = datetime.now()
     age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
-    gender = "female" if last_digit % 2 == 0 else "male"
+    gender = "Female" if last_digit % 2 == 0 else "Male"
     return {"age": age, "gender": gender}
 
 
