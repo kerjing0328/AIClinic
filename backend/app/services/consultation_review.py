@@ -353,13 +353,7 @@ class ConsultationReview:
 
         for index, reference in enumerate(references, start=1):
             # Try common column names used by vector-search functions.
-            content = (
-                reference.get("content")
-                or reference.get("text")
-                or reference.get("document")
-                or reference.get("chunk")
-                or ""
-            )
+            content = reference.get("text")
 
             similarity = (
                 reference.get("similarity")
@@ -508,32 +502,6 @@ Remember:
             consultation=consultation,
             references=references,
         )
-
-        # Keep the original retrieval information visible to the caller.
-        review_result.setdefault("references", [])
-
-        if not review_result["references"]:
-            for reference in references:
-                content = (
-                    reference.get("content")
-                    or reference.get("text")
-                    or reference.get("document")
-                    or reference.get("chunk")
-                    or ""
-                )
-
-                similarity = (
-                    reference.get("similarity")
-                    if reference.get("similarity") is not None
-                    else reference.get("match_score")
-                )
-
-                review_result["references"].append(
-                    {
-                        "content": content,
-                        "similarity": similarity,
-                    }
-                )
 
         return review_result
 
