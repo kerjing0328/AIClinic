@@ -78,14 +78,21 @@ IMPORTANT RULES:
    - "follow-up" if clearly a follow-up consultation
    - "" if it cannot be determined
 
-10. For SOAP Plan:
+9. For SOAP Plan:
    - Extract only recommendations by the doctor.
    - Do not independently recommend medications, investigations, referrals, follow-up, or treatment.
+
+10. Use standard medical terminology when extracting data.
+    Convert colloquial descriptions to concise clinical terms when the meaning is clear.
+    Do not infer or add information not stated in the transcript.
+    Example: "throat pain when swallowing" → "odynophagia";
+    "throat very red" → "pharyngeal erythema";
+    "tonsils swollen" → "tonsillar swelling".
 
 11. Do not copy the entire transcript.
     Summarize the extracted information in brief and concisely. 
 
-10. Return ONLY valid JSON.
+12. Return ONLY valid JSON.
     Do not return Markdown, explanations, or code fences.
 
 Return exactly this JSON structure:
