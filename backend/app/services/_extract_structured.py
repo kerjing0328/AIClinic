@@ -82,7 +82,7 @@ Return exactly this JSON structure:
 
 {
   "extracted_data": {
-    "type": "",
+    "consultation_type": "",
     "chief_complaint": "",
 
     "history": {

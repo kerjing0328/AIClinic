@@ -91,7 +91,7 @@ IMPORTANT RULES:
 Return exactly this JSON structure:
 
 {
-    "type": "new",
+    "consultation_type": "new",
     "age": null,
     "gender": "",
     "chief_complaint": "",
@@ -147,41 +147,24 @@ Return exactly this JSON structure:
 """
 
 
-def extract_structured(transcript_file: str) -> dict:
+def extract_structured(transcript_text: str) -> dict:
     """
-    Read a consultation transcript file and extract structured
-    clinical information using Google Gemini.
+    Extract structured clinical information from a consultation
+    transcript using Google Gemini.
 
     Args:
-        transcript_file: Name of the transcript file, e.g.
-                         "transcript01.txt".
+        transcript_text: The raw transcript content (doctor/patient
+                         lines).  Previously this accepted a filename;
+                         it now expects the actual text.
 
     Returns:
         Dictionary containing the extracted clinical data.
     """
 
-    PROJECT_ROOT = Path(__file__).resolve().parents[3]
-
-    transcript_path = (
-        PROJECT_ROOT
-        / "data"
-        / "transcript_sample"
-        / transcript_file
-    )
-
-    if not transcript_path.exists():
-        raise FileNotFoundError(
-            f"Transcript file not found: {transcript_path}"
-        )
-
-    # Read transcript
-    with open(transcript_path, "r", encoding="utf-8") as file:
-        transcript = file.read()
-
-    if not transcript.strip():
+    if not transcript_text or not transcript_text.strip():
         raise ValueError("Transcript cannot be empty.")
 
-    print(f"Transcript loaded successfully: {transcript_file}")
+    print("Transcript loaded successfully.")
 
     # Call Gemini
     interaction = client.interactions.create(
@@ -190,7 +173,7 @@ def extract_structured(transcript_file: str) -> dict:
         input=(
             "Extract structured clinical data from the following "
             "doctor-patient consultation transcript:\n\n"
-            + transcript
+            + transcript_text
         ),
     )
 
@@ -212,5 +195,12 @@ def extract_structured(transcript_file: str) -> dict:
 
 
 if __name__ == "__main__":
-    result = extract_structured("transcript01.txt")
+    import sys
+
+    # Legacy CLI: pass a filename to read from data/transcript_sample/
+    name = sys.argv[1] if len(sys.argv) > 1 else "transcript01.txt"
+    project_root = Path(__file__).resolve().parents[3]
+    path = project_root / "data" / "transcript_sample" / name
+    text = path.read_text(encoding="utf-8")
+    result = extract_structured(text)
     print(json.dumps(result, indent=2, ensure_ascii=False))

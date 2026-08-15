@@ -327,6 +327,36 @@ export function consultationReportUrl(id: string | number): string {
   return `${base}/consultations/${encodeURIComponent(String(id))}/report`;
 }
 
+/** URL for the audio transcription SSE endpoint. */
+export function transcribeAudioUrl(id: string | number): string {
+  const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  return `${base}/consultations/${encodeURIComponent(String(id))}/transcribe-audio`;
+}
+
+/**
+ * POST an audio file to the transcription endpoint and return the raw
+ * Response (a `text/event-stream`).  The caller should read the body
+ * as a ReadableStream and parse SSE events.
+ */
+export async function transcribeAudio(
+  id: string | number,
+  file: File,
+): Promise<Response> {
+  const url = transcribeAudioUrl(id);
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(url, { method: "POST", body: form });
+  if (!res.ok) {
+    let detail = `Transcription request failed (${res.status}).`;
+    try {
+      const j = await res.json();
+      detail = j?.detail ?? detail;
+    } catch { /* ignore */ }
+    throw new Error(detail);
+  }
+  return res;
+}
+
 /* ============================================================
    Medical References
    ============================================================ */

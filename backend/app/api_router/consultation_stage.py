@@ -1,5 +1,10 @@
+import json
+import os
+import tempfile
+from pathlib import Path
 from typing import Any
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException, BackgroundTasks, UploadFile, File
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 
@@ -10,8 +15,9 @@ from app.services.consultation_pipeline import (
     save_extracted_data,
     set_ai_reviewed,
     set_doctor_approved,
-    get_consultation
+    get_consultation,
 )
+from app.services.speech_text import transcribe_audio_stream
 
 from app.services.supabase_conn import get_patient, update_row, delete_consultation
 
@@ -288,6 +294,75 @@ def mark_doctor_approved(consultation_id: str, request: DoctorApprovedRequest):
             "status": "doctor_approved",
             "consultation": result,
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ===========================================================================
+# AUDIO TRANSCRIPTION — SSE streaming
+# ===========================================================================
+@router.post("/{consultation_id}/transcribe-audio")
+async def transcribe_audio(consultation_id: str, file: UploadFile = File(...)):
+    """
+    Upload an audio file and stream back the transcription via SSE.
+
+    Returns a ``text/event-stream`` response.  Each event is a JSON object:
+      ``{"line": "doctor: ..."}``  – a complete transcription line
+      ``{"done": true, "transcript": "..."}``  – stream finished
+    """
+    try:
+        consultation = get_consultation(consultation_id)
+        if not consultation:
+            raise HTTPException(status_code=404, detail="Consultation not found")
+
+        suffix = Path(file.filename).suffix if file.filename else ".mp3"
+        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix, dir=tempfile.gettempdir())
+        try:
+            content = await file.read()
+            tmp.write(content)
+            tmp.close()
+            audio_path = tmp.name
+
+            def event_generator():
+                lines: list[str] = []
+                try:
+                    for line in transcribe_audio_stream(audio_path):
+                        lines.append(line)
+                        yield f"data: {json.dumps({'line': line})}\n\n"
+
+                    transcript_text = "\n".join(lines)
+                    set_transcribed(
+                        consultation_id=consultation_id,
+                        transcript_path=file.filename or f"audio{suffix}",
+                        transcript_content=transcript_text,
+                    )
+                    yield f"data: {json.dumps({'done': True, 'transcript': transcript_text})}\n\n"
+                except Exception as exc:
+                    yield f"data: {json.dumps({'error': str(exc)})}\n\n"
+                finally:
+                    try:
+                        os.unlink(audio_path)
+                    except OSError:
+                        pass
+
+            return StreamingResponse(
+                event_generator(),
+                media_type="text/event-stream",
+                headers={
+                    "Cache-Control": "no-cache",
+                    "Connection": "keep-alive",
+                    "X-Accel-Buffering": "no",
+                },
+            )
+        except Exception:
+            try:
+                os.unlink(tmp.name)
+            except OSError:
+                pass
+            raise
+
     except HTTPException:
         raise
     except Exception as e:

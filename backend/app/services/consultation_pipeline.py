@@ -111,13 +111,13 @@ def set_ai_extracted(consultation_id: Any) -> dict:
     if not consultation:
         return {}
 
-    transcript_path = consultation.get("transcript")
+    transcript_content = consultation.get("transcript_content", "")
     patient_id = consultation.get("patient_id")
 
-    if not transcript_path:
-        raise ValueError("Consultation has no transcript")
+    if not transcript_content:
+        raise ValueError("Consultation has no transcript content")
 
-    structured_data = extract_structured(transcript_path)
+    structured_data = extract_structured(transcript_content)
 
     structured_data_with_demographics = inject_demographics(
         structured_data,

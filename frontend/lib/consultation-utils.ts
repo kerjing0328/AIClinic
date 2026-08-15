@@ -137,7 +137,7 @@ export const MANDATORY_FIELDS = [
 
 const ORDER = [
   "chief_complaint",
-  "type",
+  "consultation_type",
   "age",
   "gender",
 
@@ -256,7 +256,7 @@ export function flagsUnder(
    ============================================================ */
 export const SAMPLE_EXTRACTED: Record<string, unknown> = {
   chief_complaint: "",
-  type: "",
+  consultation_type: "",
   age: "",
   gender: "",
   history: {

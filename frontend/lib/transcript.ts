@@ -13,6 +13,23 @@ const DOCTOR_RE = /^\s*(doctor|dr\.?|physician|clinician)\s*[:\-]\s*/i;
 const PATIENT_RE = /^\s*(patient|pt\.?|p)\s*[:\-]\s*/i;
 const GENERIC_RE = /^\s*([A-Za-z .]{1,30})\s*[:\-]\s+/;
 
+/** Parse a single transcript line into a Turn (returns null for blank lines). */
+export function parseLine(line: string): Turn | null {
+  if (!line.trim()) return null;
+
+  if (DOCTOR_RE.test(line)) {
+    return { speaker: "doctor", name: "Doctor", text: line.replace(DOCTOR_RE, "").trim() };
+  }
+  if (PATIENT_RE.test(line)) {
+    return { speaker: "patient", name: "Patient", text: line.replace(PATIENT_RE, "").trim() };
+  }
+  const m = line.match(GENERIC_RE);
+  if (m) {
+    return { speaker: "other", name: m[1].trim(), text: line.replace(GENERIC_RE, "").trim() };
+  }
+  return { speaker: "other", name: "Note", text: line.trim() };
+}
+
 export function parseTranscript(raw: string): Turn[] {
   const lines = raw.split(/\r?\n/);
   const turns: Turn[] = [];

@@ -1,0 +1,20 @@
+doctor: Afternoon, what brings you here today?
+patient: Afternoon doc. My throat damn pain la, swallowing saliva also hurts. I think I ate too much heathy stuff recently.
+doctor: Ai yo, how long already like this? Got fever or cough?
+patient: Started two days ago la. No cough, but last night I felt a bit feverish. Took two Panadol then okay a bit, but the throat pain is getting worse.
+doctor: I see. Let me take a look. Open your mouth wide and say ah.
+patient: Ah!
+doctor: Wah, your throat very red lay and your tonsils quite swollen. Got a bit of white spots also. Let me feel your neck. Ah, the lymph nodes here also a bit swollen. Pain when I press?
+patient: Yeah, quite tender. So doc, is it very serious?
+doctor: Looks like bacterial tonsillitis or pharyngitis. Your tonsils infected already. That's why it's so painful to swallow. Have you been drinking a lot of sweet drinks or eating spicy food lately?
+patient: Ya, weather very hot lately, so I drank quite a lot of milk tea and coconut drinks. Plus I ate spicy chilli pan mee yesterday.
+doctor: No wonder la. Sweet and spicy things will just irritate it more. I will prescribe you a course of antibiotics to clear the bacterial infection. But before that, got any allergy to penicillin or any other medicine?
+patient: No allergy doc.
+doctor: Okay. Good. I will give you Augmentin 625 milligrams. It's a combination of Amoxicillin and Clavulanate. Very effective for this kind of bacterial throat infection. You need to take one tablet twice a day, morning and night after food for seven days. You must finish the whole seven-day course, okay? Even if the pain stops after two days, don't stop taking it halfway, otherwise the bacteria get resistant and come back stronger.
+patient: Okay can. Got anything for the pain? I cannot even eat properly, very suffering la.
+doctor: I'll give you some Difflam lozenges to suck on and a throat spray. It will numb the throat a bit so you can eat and swallow easier. I'll also give you some stronger painkillers like Ibuprofen 400 milligrams for the swelling and fever.
+patient: Okay doc. Need to avoid any food?
+doctor: Try to eat soft food first like porridge or soup. Please avoid spicy, fried, and all those sweet bubble teas for now. Drink plenty of plain water, or you can gargle with warm salt water at home. That one very effective to clean the throat.
+patient: Ai ya, my milk tea. Okay la, health first. Doc, can get MC for today and tomorrow? Really hard to focus at work and present with this voice.
+doctor: Can. I'll write you a two-day MC for you to rest your voice. Remember to drink more water and get well soon, ah.
+patient: Thanks doc. Going to pharmacy now.

@@ -211,12 +211,12 @@ def _build_pdf(consultation: dict, patient: dict | None) -> bytes:
             "IC",
             (patient or {}).get("patient_ic", "—"),
         ],
-        [
-            "Age",
-            str((patient or {}).get("age", "—")),
-            "Gender",
-            str((patient or {}).get("gender", "—")),
-        ],
+        # [
+        #     "Age",
+        #     str((patient or {}).get("age", "—")),
+        #     "Gender",
+        #     str((patient or {}).get("gender", "—")),
+        # ],
         ["Date", _fmt_date(approved_at), "", ""],
     ]
     meta = Table(meta_rows, colWidths=[28 * mm, 60 * mm, 24 * mm, 55 * mm])
