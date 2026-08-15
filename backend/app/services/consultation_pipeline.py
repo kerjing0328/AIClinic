@@ -6,8 +6,9 @@ Manages the consultation lifecycle through status stages:
   1. draft          -> create row (patient_id, doctor_id, created_at, updated_at)
   2. transcribed    -> update transcript (path) + updated_at
   3. ai_extracted   -> update extracted_data (JSON, with demographics) + updated_at
-  4. note_generated -> update final_note (placeholder JSON) + updated_at
-  5. doctor_approved  -> update final_note (reviewed JSON) + updated_at
+  4. ai_reviewed    -> update ai_review (JSON) + updated_at
+  5. note_generated -> update final_note (placeholder JSON) + updated_at
+  6. doctor_approved  -> update final_note (reviewed JSON) + updated_at
 
 """
 
@@ -16,6 +17,7 @@ from datetime import datetime
 from typing import Any, Optional
 from app.services.supabase_conn import get_patient_demographics, insert_row, update_row, get_consultation
 from app.services.extract_structured import extract_structured
+from app.services.consultation_review import review_consultation
 
 
 def load_consultation_json(file_path: str) -> dict:
@@ -137,26 +139,41 @@ def set_ai_extracted(consultation_id: Any) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# STAGE 4 — note_generated: attach final_note - placeholder
+# STAGE 4 — ai_reviewed: run AI review and store result
 # ---------------------------------------------------------------------------
+def set_ai_reviewed(consultation_id: Any) -> dict:
+    """
+    Run the AI clinical review on the extracted_data, store the review
+    result, and update status to 'ai_reviewed'.
+    """
+    consultation = get_consultation(consultation_id)
 
-def set_note_generated(consultation_id: Any, final_note_placeholder: dict) -> dict:
-    """
-    Update the final_note column with an initial (placeholder) note JSON.
-    Advances status to 'note_generated'.
-    """
+    if not consultation:
+        raise ValueError("Consultation not found")
+
+    extracted_data = consultation.get("extracted_data")
+    if not extracted_data or not isinstance(extracted_data, dict):
+        raise ValueError("Consultation has no extracted data to review")
+
+    # Call the review service (Gemini + medical references).
+    review_result = review_consultation({"extracted_data": extracted_data})
+
     data = {
-        "final_note": final_note_placeholder,
-        "status": "note_generated",
+        "ai_review": review_result,
+        "status": "ai_reviewed",
         "updated_at": datetime.now().isoformat(),
     }
-    return update_row("consultations", consultation_id, data, id_column="id")
 
+    return update_row(
+        "consultations",
+        consultation_id,
+        data,
+        id_column="id"
+    )
 
 # ---------------------------------------------------------------------------
 # STAGE 5 — doctor_approved: update final_note with reviewed content
 # ---------------------------------------------------------------------------
-
 def set_doctor_approved(consultation_id: Any, extracted_data: dict) -> dict:
     """
     Update the extracted_data column with the doctor-reviewed JSON.
@@ -191,14 +208,15 @@ if __name__ == "__main__":
         print("  1. draft          - create new consultation row")
         print("  2. transcribed    - attach transcript path")
         print("  3. ai_extracted   - inject demographics + extracted_data")
-        print("  4. note_generated - attach placeholder final_note")
-        print("  5. doctor_approved  - update reviewed final_note")
+        print("  4. ai_reviewed    - run AI review + store result")
+        print("  5. note_generated - attach placeholder final_note")
+        print("  6. doctor_approved  - update reviewed final_note")
         print("  0. Exit")
         print("=" * 45)
 
     while True:
         print_menu()
-        choice = input("Enter stage (0-5): ").strip()
+        choice = input("Enter stage (0-6): ").strip()
 
         try:
             # ---- Exit ----
@@ -212,8 +230,8 @@ if __name__ == "__main__":
                 consultation_id = draft.get("id")
                 print(f"[draft] created row id={consultation_id}")
 
-            # ---- Guard: stages 2-5 need a consultation_id ----
-            elif choice in {"2", "3", "4", "5"} and not consultation_id:
+            # ---- Guard: stages 2-6 need a consultation_id ----
+            elif choice in {"2", "3", "4", "5", "6"} and not consultation_id:
                 print("⚠️  Please run Stage 1 (draft) first to create a consultation.")
 
             # ---- STAGE 2: transcribed ----
@@ -223,31 +241,20 @@ if __name__ == "__main__":
 
             # ---- STAGE 3: ai_extracted ----
             elif choice == "3":
-                
-                #save_consultation_json(updated, OUTPUT_FILE)
                 data = set_ai_extracted(consultation_id)
                 print(f"[ai_extracted]   extracted_data set "
                       f"(age={data['extracted_data']['age']}, "
                       f"gender={data['extracted_data']['gender']})")
-                #print(f"local copy saved to: {OUTPUT_FILE}")
 
-            # ---- STAGE 4: note_generated ----
+            # ---- STAGE 4: ai_reviewed ----
             elif choice == "4":
-                placeholder = {
-                    "final_note": {
-                        "clinical_note": {
-                            "subjective": "",
-                            "objective": "",
-                            "assessment": "",
-                            "plan": "",
-                        }
-                    }
-                }
-                set_note_generated(consultation_id, placeholder)
-                print(f"[note_generated] final_note placeholder set")
+                result = set_ai_review(consultation_id)
+                print(f"[ai_reviewed]    review stored "
+                      f"(risk={result.get('ai_review', {}).get('review', {}).get('overall_risk', '?')})")
+
 
             # ---- STAGE 5: doctor_approved ----
-            elif choice == "5":
+            elif choice == "6":
                 reviewed = {
                     "final_note": {
                         "clinical_note": {
@@ -263,7 +270,7 @@ if __name__ == "__main__":
 
             # ---- Invalid ----
             else:
-                print("Invalid choice. Please enter a number from 0 to 5.")
+                print("Invalid choice. Please enter a number from 0 to 6.")
 
         except FileNotFoundError:
             print(f"Input file not found: {TRANSCRIPT_PATH}")

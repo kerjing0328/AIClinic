@@ -539,7 +539,48 @@ Remember:
 
 
 # ---------------------------------------------------------------------------
-# FILE HELPERS
+# REVIEW ENTRY POINT - accept extracted_data in json as consultation for review
+# ---------------------------------------------------------------------------
+
+def review_consultation(
+    consultation: dict,
+    match_threshold: float = 0.5,
+    match_count: int = 5,
+) -> dict:
+    """
+    Review a structured consultation dict directly.
+
+    This is the primary entry point used by the API layer. It accepts the
+    consultation data in memory (no file dependency).
+
+    Args:
+        consultation:
+            Structured consultation data, e.g. {"extracted_data": {...}}.
+
+        match_threshold:
+            Minimum semantic similarity for medical references.
+
+        match_count:
+            Maximum number of medical references to retrieve.
+
+    Returns:
+        Review JSON (red flags, concerns, suggestions, references, ...).
+    """
+
+    if not isinstance(consultation, dict):
+        raise TypeError("consultation must be a dictionary.")
+
+    reviewer = ConsultationReview()
+
+    return reviewer.review(
+        consultation=consultation,
+        match_threshold=match_threshold,
+        match_count=match_count,
+    )
+
+
+# ---------------------------------------------------------------------------
+# FILE HELPERS  (kept for CLI / offline testing)
 # ---------------------------------------------------------------------------
 
 def load_consultation_json(file_path: str) -> dict:
@@ -576,9 +617,7 @@ def review_consultation_file(
 
     consultation = load_consultation_json(consultation_file)
 
-    reviewer = ConsultationReview()
-
-    return reviewer.review(
+    return review_consultation(
         consultation=consultation,
         match_threshold=match_threshold,
         match_count=match_count,

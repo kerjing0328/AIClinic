@@ -7,7 +7,7 @@ from app.services.consultation_pipeline import (
     create_draft,
     set_transcribed,
     set_ai_extracted,
-    set_note_generated,
+    set_ai_reviewed,
     set_doctor_approved,
     get_consultation
 )
@@ -185,7 +185,59 @@ def get_ai_extracted(consultation_id: str):
         )
 
 # ===========================================================================
-# STAGE 4 — DOCTOR APPROVED
+# STAGE 4 — AI REVIEWED
+# ===========================================================================
+
+@router.post("/{consultation_id}/ai-review")
+def generate_ai_review(consultation_id: str):
+    """
+    Run the AI clinical review on the extracted data and store the result.
+
+    Status: ai_reviewed
+    """
+    try:
+        consultation = get_consultation(consultation_id)
+        if not consultation:
+            raise HTTPException(status_code=404, detail="Consultation not found")
+
+        result = set_ai_reviewed(consultation_id)
+        if not result:
+            raise HTTPException(status_code=500, detail="AI review failed")
+
+        return {
+            "success": True,
+            "message": "AI review completed",
+            "status": "ai_reviewed",
+            "review": result.get("ai_review"),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{consultation_id}/ai-review")
+def get_ai_review(consultation_id: str):
+    """
+    Fetch the stored AI review for a consultation (read-only).
+    """
+    try:
+        consultation = get_consultation(consultation_id)
+        if not consultation:
+            raise HTTPException(status_code=404, detail="Consultation not found")
+
+        return {
+            "success": True,
+            "status": consultation.get("status"),
+            "review": consultation.get("ai_review"),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ===========================================================================
+# STAGE 5 — DOCTOR APPROVED
 # ===========================================================================
 @router.patch("/{consultation_id}/doctor-approved")
 def mark_doctor_approved(consultation_id: str, request: DoctorApprovedRequest):
