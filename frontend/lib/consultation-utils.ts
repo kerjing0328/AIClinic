@@ -105,16 +105,17 @@ export function unflatten(flat: Record<string, string>): Record<string, unknown>
    Form field helpers (for ReviewStage)
    ============================================================ */
 export const MANDATORY_FIELDS = [
-  "allergies",
-  "allergy",
-  "vital_signs",
-  "vitals",
-  "medical_history",
-  "history",
-  "symptoms",
-  "duration",
   "chief_complaint",
+  "onset",
+  "duration",
+  "symptoms",
+  "medical_history",
+  "medications",
+  "allergies",
+  "vital_signs",
+  "examination",
   "diagnosis",
+  "clinical_impression",
 ];
 
 const ORDER = [
@@ -122,24 +123,53 @@ const ORDER = [
   "type",
   "age",
   "gender",
-  "demographics",
+
+  // SOAP
+  "SOAP",
+
+  // Subjective
+  "subjective",
   "history",
-  "symptoms",
-  "duration",
   "onset",
+  "duration",
+  "progression",
   "severity",
-  "examination",
+  "symptoms",
+  "relevant_negatives",
+  "medical_history",
+  "medications",
+  "allergies",
+  "social_history",
+
+  // Objective
+  "objective",
   "vital_signs",
-  "findings",
+  "temperature",
+  "blood_pressure",
+  "heart_rate",
+  "respiratory_rate",
+  "oxygen_saturation",
+  "weight",
+  "examination",
+
+  // Assessment
   "assessment",
   "diagnosis",
   "clinical_impression",
-  "investigations",
+
+  // Plan
   "plan",
   "medications",
   "treatment",
+  "referral",
   "follow_up",
   "safety_netting",
+  "patient_instructions",
+
+  // Investigations
+  "investigations",
+  "ordered",
+  "results",
 ];
 
 export function lastSeg(key: string): string {

@@ -1,20 +1,15 @@
+import requests
 import os
+from dotenv import load_dotenv
 import json
 from pathlib import Path
 
-from dotenv import load_dotenv
-from google import genai
-
-
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY is not set in .env")
-
-
-client = genai.Client(api_key=GEMINI_API_KEY)
+if not OPENROUTER_API_KEY:
+    raise ValueError("OPENROUTER_API_KEY is not set in .env")
 
 
 SYSTEM_PROMPT = """
@@ -138,10 +133,10 @@ Return exactly this JSON structure:
 """
 
 
-def extract_structured2(transcript_file: str) -> dict:
+def extract_structured(transcript_file: str) -> dict:
     """
     Read a consultation transcript file and extract structured
-    clinical information using Google Gemini.
+    clinical information using an OpenRouter LLM.
 
     Args:
         transcript_file: Name of the transcript file, e.g.
@@ -174,34 +169,56 @@ def extract_structured2(transcript_file: str) -> dict:
 
     print(f"Transcript loaded successfully: {transcript_file}")
 
-    # Call Gemini
-    interaction = client.interactions.create(
-        model="gemini-3.5-flash",
-        system_instruction=SYSTEM_PROMPT,
-        input=(
-            "Extract structured clinical data from the following "
-            "doctor-patient consultation transcript:\n\n"
-            + transcript
-        ),
+    messages = [
+        {
+            "role": "system",
+            "content": SYSTEM_PROMPT
+        },
+        {
+            "role": "user",
+            "content": (
+                "Extract structured clinical data from the following "
+                "doctor-patient consultation transcript:\n\n"
+                + transcript
+            )
+        }
+    ]
+
+    # Call OpenRouter
+    response = requests.post(
+        url="https://openrouter.ai/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": "google/gemma-4-26b-a4b-it:free",
+            "messages": messages,
+            "reasoning": {
+                "enabled": True
+            }
+        }
     )
 
-    # Get response
-    structured_data = interaction.output_text
+    if not response.ok:
+        print("OpenRouter error:")
+        print(response.text)
+        response.raise_for_status()
 
-    print("structured_data received from Gemini:")
+    # Extract model response
+    data = response.json()
+    structured_data = data["choices"][0]["message"]["content"]
+    print("structured_data received from model:")
     print(structured_data)
 
-    # Parse JSON
     try:
         clinical_data = json.loads(structured_data)
     except json.JSONDecodeError as e:
-        print("Model returned invalid JSON:")
-        print(structured_data)
+        print("Model returned invalid JSON.")
         raise e
 
     return clinical_data
 
-
 if __name__ == "__main__":
-    result = extract_structured2("transcript01.txt")
+    result = extract_structured("transcript01.txt")
     print(json.dumps(result, indent=2, ensure_ascii=False))

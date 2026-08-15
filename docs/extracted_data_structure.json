@@ -3,51 +3,49 @@
     "type": "new",
     "age": null,
     "gender": "",
-    
     "chief_complaint": "",
 
-    "history": {
-      "symptoms": [],
-      "onset": "",
-      "duration": "",
-      "severity": "",
-      "associated_symptoms": [],
-      "relevant_negatives": [],
-      "medical_history": [],
-      "medications": [],
-      "allergies": [],
-      "social_history": ""
-    },
-
-    "examination": {
-      "vital_signs": {
-        "temperature": null,
-        "blood_pressure": "",
-        "heart_rate": null,
-        "respiratory_rate": null,
-        "oxygen_saturation": null,
-        "weight": null
+    "SOAP": {
+      "subjective": {
+        "history": "",
+        "symptoms": [],
+        "relevant_negatives": [],
+        "medical_history": [],
+        "medications": [],
+        "allergies": [],
+        "social_history": ""
       },
-      "findings": ""
+
+      "objective": {
+        "vital_signs": {
+          "temperature": null,
+          "blood_pressure": "",
+          "heart_rate": null,
+          "respiratory_rate": null,
+          "oxygen_saturation": null,
+          "weight": null
+        },
+        "examination": ""
+      },
+
+      "assessment": {
+        "diagnosis": [],
+        "clinical_impression": ""
+      },
+
+      "plan": {
+        "medications": [],
+        "treatment": [],
+        "referral": [],
+        "follow_up": "",
+        "safety_netting": [],
+        "patient_instructions": []
+      }
     },
 
     "investigations": {
-      "results": [],
-      "ordered": []
-    },
-
-    "assessment": {
-      "diagnosis": [],
-      "clinical_impression": ""
-    },
-
-    "plan": {
-      "medications": [],
-      "treatment": [],
-      "referral": [],
-      "follow_up": "",
-      "safety_netting": [],
-      "patient_instructions": []
+      "ordered": [],
+      "results": []
     }
   }
 }

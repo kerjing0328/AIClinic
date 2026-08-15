@@ -15,7 +15,7 @@ import json
 from datetime import datetime
 from typing import Any, Optional
 from app.services.supabase_conn import get_patient_demographics, insert_row, update_row, get_consultation
-from app.services.extract_structured2 import extract_structured2
+from app.services.extract_structured import extract_structured
 
 
 def load_consultation_json(file_path: str) -> dict:
@@ -115,7 +115,7 @@ def set_ai_extracted(consultation_id: Any) -> dict:
     if not transcript_path:
         raise ValueError("Consultation has no transcript")
 
-    structured_data = extract_structured2(transcript_path)
+    structured_data = extract_structured(transcript_path)
 
     structured_data_with_demographics = inject_demographics(
         structured_data,
