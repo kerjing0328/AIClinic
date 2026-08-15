@@ -81,8 +81,16 @@ export interface AiReviewContent {
 }
 
 export interface AiReviewReference {
-  content?: string;
+  text?: string;
   similarity?: number | null;
+  source?: string;
+  pages?: string;
+}
+
+export interface MedicalReferenceDocument {
+  name: string;
+  size_bytes: number;
+  modified_at: number;
 }
 
 export interface AiReviewPayload {
@@ -317,6 +325,24 @@ export function deleteConsultation(id: string | number) {
 export function consultationReportUrl(id: string | number): string {
   const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
   return `${base}/consultations/${encodeURIComponent(String(id))}/report`;
+}
+
+/* ============================================================
+   Medical References
+   ============================================================ */
+
+/** GET /medical-references — list all PDF files in data/medical_references/. */
+export function getMedicalReferences() {
+  return request<{
+    success: boolean;
+    documents: MedicalReferenceDocument[];
+  }>("/medical_references");
+}
+
+/** Direct URL to view a medical reference PDF in the browser. */
+export function medicalReferencePdfUrl(filename: string): string {
+  const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  return `${base}/medical_references/${encodeURIComponent(filename)}`;
 }
 
 /** Fetch the report as a Blob and trigger a browser download (keeps auth headers if you add them later). */

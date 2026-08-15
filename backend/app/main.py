@@ -4,6 +4,7 @@ from app.services.supabase_conn import supabase
 from app.api_router.create_patient_doctor import router as create_patient_doctor_router
 from app.api_router.consultation_stage import router as consultation_stage_router
 from app.api_router.consultation_report import router as consultation_report_router
+from app.api_router.medical_references import router as medical_references_router
 
 
 app = FastAPI(
@@ -54,3 +55,4 @@ def test_supabase():
 app.include_router(create_patient_doctor_router)
 app.include_router(consultation_stage_router)
 app.include_router(consultation_report_router)
+app.include_router(medical_references_router)

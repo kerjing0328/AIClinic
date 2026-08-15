@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/", label: "Home" },
   { href: "/patients", label: "Patients" },
   { href: "/consultation", label: "Consultation" },
+  { href: "/references", label: "References" },
 ];
 
 export default function Navbar() {

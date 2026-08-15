@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   consultationKey,
+  medicalReferencePdfUrl,
   type Consultation,
   type AiReviewPayload,
   type AiReviewItem,
@@ -143,7 +144,7 @@ export default function AiReviewPanel({
         </div>
         {review && (
           <span
-            className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${riskStyle.bg} ${riskStyle.fg}`}
+            className={`rounded-full px-3 py-1 text-[9px] text-center font-bold uppercase tracking-wide ${riskStyle.bg} ${riskStyle.fg}`}
             title={`Overall risk: ${review.overall_risk ?? "low"}`}
           >
             {riskStyle.label}
@@ -393,17 +394,64 @@ export default function AiReviewPanel({
 
           {result?.references && result.references.length > 0 && (
             <Section title="References" count={result.references.length}>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {result.references.map((ref, i) => (
                   <li key={i} className="rounded-xl bg-white/40 px-4 py-3">
-                    <p className="line-clamp-3 text-xs leading-relaxed text-[var(--color-text-muted)]">
-                      {ref.content ?? "—"}
+                    {/* Content text — shown first */}
+                    <p className="text-xs leading-relaxed text-[var(--color-text-main)]">
+                      {ref.text ?? "—"}
                     </p>
-                    {ref.similarity !== null && ref.similarity !== undefined && (
-                      <p className="mt-1.5 text-[10px] font-semibold text-[var(--color-primary)]">
-                        Similarity: {(ref.similarity * 100).toFixed(1)}%
-                      </p>
-                    )}
+
+                    {/* Source document link + pages + similarity */}
+                    <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                      {ref.source && (
+                        <a
+                          href={medicalReferencePdfUrl(ref.source)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)] transition hover:bg-[var(--color-primary)] hover:text-white"
+                          title={`Open ${ref.source} in new tab`}
+                        >
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden>
+                            <path
+                              d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <polyline
+                              points="15,3 21,3 21,9"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <line
+                              x1="10"
+                              y1="14"
+                              x2="21"
+                              y2="3"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          {ref.source}
+                        </a>
+                      )}
+                      {ref.pages && (
+                        <span className="rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-text-muted)] ring-1 ring-white/60">
+                          Page {ref.pages}
+                        </span>
+                      )}
+                      {ref.similarity !== null && ref.similarity !== undefined && (
+                        <span className="text-[10px] font-semibold text-[var(--color-primary)]">
+                          {(ref.similarity * 100).toFixed(1)}% match
+                        </span>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
