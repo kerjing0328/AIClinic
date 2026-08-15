@@ -9,7 +9,7 @@ from docling.document_converter import DocumentConverter
 from docling.chunking import HybridChunker
 from transformers import AutoTokenizer
 from sentence_transformers import SentenceTransformer
-from supabase_conn import insert_medical_references
+from app.services.supabase_conn import insert_medical_references
 
 class DocumentProcessor:
     """

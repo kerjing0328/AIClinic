@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from supabase_conn import match_medical_references
+from app.services.supabase_conn import match_medical_references
 
 
 class DocumentSearch:
