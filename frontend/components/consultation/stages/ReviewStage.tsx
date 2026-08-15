@@ -19,6 +19,8 @@ import {
   prettyLabel,
   prettyPath,
   SAMPLE_EXTRACTED,
+  soapGroups,
+  type SoapGroup,
 } from "@/lib/consultation-utils";
 import AiReviewPanel from "./AiReviewPanel";
 
@@ -157,6 +159,48 @@ export default function ReviewStage({
     );
   }
 
+  /** Check if the extracted data has a SOAP structure */
+  const hasSoap = useMemo(() => {
+    const src =
+      (consultation.ai_extracted as Record<string, unknown>) ??
+      (consultation.extracted_data as Record<string, unknown>) ??
+      {};
+    const unwrapped =
+      src && typeof src === "object" && Object.keys(src).length === 1 && "extracted_data" in src
+        ? (src as Record<string, unknown>).extracted_data
+        : src;
+    return unwrapped && typeof unwrapped === "object" && "SOAP" in unwrapped;
+  }, [consultation]);
+
+  const groups = useMemo(() => soapGroups(extracted), [extracted]);
+
+  function renderSoapGroups() {
+    return (
+      <div className="space-y-6">
+        {groups.map((g) => {
+          const missing = g.fields.filter(
+            (f) => isMandatory(f.flatKey) && (fields[f.flatKey] ?? "").trim() === ""
+          ).length;
+          return (
+            <div key={g.heading} className="rounded-3xl bg-white/40 p-6">
+              <div className="mb-4 flex items-center gap-3 border-b border-white/60 pb-2">
+                <h3 className="text-lg font-semibold tracking-tight">{g.heading}</h3>
+                {missing > 0 && (
+                  <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-[11px] font-semibold text-red-700">
+                    {missing} required
+                  </span>
+                )}
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                {g.fields.map((f) => LeafField(f.flatKey, fields[f.flatKey] ?? ""))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   function renderGroup(prefix: string, depth: number): React.ReactNode {
     const { leaves, subgroups } = childrenOf(fields, prefix);
 
@@ -270,7 +314,7 @@ export default function ReviewStage({
               </div>
             )}
 
-            {renderGroup("", 0)}
+            {hasSoap ? renderSoapGroups() : renderGroup("", 0)}
           </div>
 
           {/* 1/3 — AI suggestions */}

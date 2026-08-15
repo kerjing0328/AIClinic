@@ -8,7 +8,7 @@ import {
   type AiReviewContent,
   type AiReviewItem,
 } from "@/lib/api";
-import { flatten, childrenOf, lastSeg, prettyLabel } from "@/lib/consultation-utils";
+import { flatten, childrenOf, lastSeg, prettyLabel, soapGroups } from "@/lib/consultation-utils";
 
 export default function ReportStage({
   consultation,
@@ -62,6 +62,67 @@ export default function ReportStage({
     }
   }
 
+  const hasSoap = useMemo(() => {
+    const src =
+      (consultation.final_note as Record<string, unknown>) ??
+      (consultation.ai_extracted as Record<string, unknown>) ??
+      (consultation.extracted_data as Record<string, unknown>) ??
+      {};
+    const unwrapped =
+      src && typeof src === "object" && Object.keys(src).length === 1 && "extracted_data" in src
+        ? (src as Record<string, unknown>).extracted_data
+        : src;
+    return unwrapped && typeof unwrapped === "object" && "SOAP" in unwrapped;
+  }, [consultation]);
+
+  const groups = useMemo(() => soapGroups(note), [note]);
+
+  function ReadRows({ keys }: { keys: string[] }) {
+    return (
+      <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+        {keys.map((k) => {
+          const value = fields[k];
+          const long = value.length > 60 || lastSeg(k).toLowerCase().includes("note");
+          return (
+            <div key={k} className={long ? "sm:col-span-2" : ""}>
+              <dt className="label">{prettyLabel(lastSeg(k))}</dt>
+              <dd className="mt-1 whitespace-pre-wrap font-medium text-[var(--color-text-main)] break-words">
+                {value.trim() ? value : "—"}
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
+    );
+  }
+
+  function renderSoapGroups() {
+    return (
+      <div className="space-y-6">
+        {groups.map((g) => (
+          <div key={g.heading} className="rounded-3xl bg-white/50 p-6">
+            <div className="mb-3 border-b border-white/60 pb-2">
+              <h3 className="text-lg font-semibold tracking-tight">{g.heading}</h3>
+            </div>
+            <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+              {g.fields.map((f) => {
+                const long = f.value.length > 60 || f.key.toLowerCase().includes("note");
+                return (
+                  <div key={f.flatKey} className={long ? "sm:col-span-2" : ""}>
+                    <dt className="label">{prettyLabel(f.key)}</dt>
+                    <dd className="mt-1 whitespace-pre-wrap font-medium text-[var(--color-text-main)] break-words">
+                      {f.value.trim() ? f.value : "—"}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   function ReadGroup(prefix: string, depth: number): React.ReactNode {
     const { leaves, subgroups } = childrenOf(fields, prefix);
 
@@ -108,25 +169,6 @@ export default function ReportStage({
           <div key={sg}>{ReadGroup(sg, depth + 1)}</div>
         ))}
       </div>
-    );
-  }
-
-  function ReadRows({ keys }: { keys: string[] }) {
-    return (
-      <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-        {keys.map((k) => {
-          const value = fields[k];
-          const long = value.length > 60 || lastSeg(k).toLowerCase().includes("note");
-          return (
-            <div key={k} className={long ? "sm:col-span-2" : ""}>
-              <dt className="label">{prettyLabel(lastSeg(k))}</dt>
-              <dd className="mt-1 whitespace-pre-wrap font-medium text-[var(--color-text-main)] break-words">
-                {value.trim() ? value : "—"}
-              </dd>
-            </div>
-          );
-        })}
-      </dl>
     );
   }
 
@@ -198,6 +240,8 @@ export default function ReportStage({
         <div className="mt-8">
           {Object.keys(fields).length === 0 ? (
             <p className="text-[var(--color-text-muted)]">No clinical data available.</p>
+          ) : hasSoap ? (
+            renderSoapGroups()
           ) : (
             ReadGroup("", 0)
           )}

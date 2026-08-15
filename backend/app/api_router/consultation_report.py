@@ -48,7 +48,7 @@ LIGHT = colors.HexColor("#D1FAE5")
 
 
 # --------------------------------------------------------------------------
-# Helpers to flatten the nested clinical JSON into readable rows
+# Helpers
 # --------------------------------------------------------------------------
 def _pretty(label: str) -> str:
     return label.replace("_", " ").strip().title()
@@ -65,31 +65,107 @@ def _stringify(value: Any) -> str:
     return s if s else "—"
 
 
-def _iter_groups(data: dict):
-    """
-    Yield (group_title, [(field_label, value_str), ...]) preserving the JSON
-    structure. Nested dicts become their own groups; scalars at the top level
-    go under 'General'.
-    """
-    general: list[tuple[str, str]] = []
-
-    for key, value in data.items():
-        if isinstance(value, dict):
-            rows: list[tuple[str, str]] = []
-            for sub_k, sub_v in value.items():
-                if isinstance(sub_v, dict):
-                    # one more level (e.g. examination.vital_signs)
-                    for k2, v2 in sub_v.items():
-                        rows.append((f"{_pretty(sub_k)} › {_pretty(k2)}", _stringify(v2)))
-                else:
-                    rows.append((_pretty(sub_k), _stringify(sub_v)))
-            yield _pretty(key), rows
+def _flatten_leaf(obj: dict, prefix: str = "") -> list[tuple[str, str]]:
+    """Flatten a nested dict into (label, value) pairs for leaf fields only."""
+    rows: list[tuple[str, str]] = []
+    for k, v in obj.items():
+        if isinstance(v, dict):
+            rows.extend(_flatten_leaf(v, prefix=f"{prefix}{k} › " if prefix else f"{k} › "))
+        elif isinstance(v, list):
+            rows.append((_pretty(prefix + k), _stringify(v)))
         else:
-            general.append((_pretty(key), _stringify(value)))
+            rows.append((_pretty(prefix + k), _stringify(v)))
+    return rows
 
-    if general:
-        # show General first
-        yield "__general__", general
+
+# --------------------------------------------------------------------------
+# SOAP-ordered extraction
+# --------------------------------------------------------------------------
+
+# Display order for fields within each SOAP section
+_SUBJECTIVE_ORDER = [
+    "history", "onset", "duration", "progression", "severity",
+    "symptoms", "relevant_negatives", "medical_history",
+    "medications", "allergies", "social_history",
+]
+
+_OBJECTIVE_ORDER = [
+    "vital_signs", "examination", "findings",
+]
+
+_ASSESSMENT_ORDER = [
+    "diagnosis", "clinical_impression",
+]
+
+_PLAN_ORDER = [
+    "medications", "treatment", "referral",
+    "follow_up", "safety_netting", "patient_instructions",
+]
+
+
+def _ordered_fields(data: dict, order: list[str]) -> list[tuple[str, str]]:
+    """Return fields from data in the specified order, then any extras."""
+    seen = set()
+    rows: list[tuple[str, str]] = []
+
+    for key in order:
+        if key in data:
+            seen.add(key)
+            val = data[key]
+            if isinstance(val, dict):
+                # Flatten nested dicts (e.g. vital_signs) without repeating parent label
+                rows.extend(_flatten_leaf(val, prefix=""))
+            else:
+                rows.append((_pretty(key), _stringify(val)))
+
+    # Any remaining keys not in the order list
+    for key, val in data.items():
+        if key not in seen:
+            if isinstance(val, dict):
+                rows.extend(_flatten_leaf(val, prefix=""))
+            else:
+                rows.append((_pretty(key), _stringify(val)))
+
+    return rows
+
+
+def _iter_soap(note: dict):
+    """
+    Yield (section_heading, [(field_label, value_str), ...]) in SOAP order.
+    """
+    # Top-level demographics / metadata
+    top_level = {k: v for k, v in note.items()
+                 if k not in ("SOAP", "investigations") and not isinstance(v, dict)}
+    if top_level:
+        rows = [((_pretty(k), _stringify(v))) for k, v in top_level.items()]
+        yield "Details", rows
+
+    soap = note.get("SOAP", note)  # fallback to root if no SOAP key
+
+    # Subjective
+    subjective = soap.get("subjective", {})
+    if subjective:
+        yield "Subjective", _ordered_fields(subjective, _SUBJECTIVE_ORDER)
+
+    # Objective
+    objective = soap.get("objective", {})
+    if objective:
+        yield "Objective", _ordered_fields(objective, _OBJECTIVE_ORDER)
+
+    # Assessment
+    assessment = soap.get("assessment", {})
+    if assessment:
+        yield "Assessment", _ordered_fields(assessment, _ASSESSMENT_ORDER)
+
+    # Plan
+    plan = soap.get("plan", {})
+    if plan:
+        yield "Plan", _ordered_fields(plan, _PLAN_ORDER)
+
+    # Investigations (outside SOAP)
+    investigations = note.get("investigations", {})
+    if investigations:
+        yield "Investigations", _ordered_fields(investigations, ["ordered", "results"])
 
 
 # --------------------------------------------------------------------------
@@ -172,8 +248,10 @@ def _build_pdf(consultation: dict, patient: dict | None) -> bytes:
     if not isinstance(note, dict) or not note:
         story.append(Paragraph("No clinical data available.", small))
     else:
-        for title, rows in _iter_groups(note):
-            heading = "General" if title == "__general__" else title
+        for heading, rows in _iter_soap(note):
+            if not rows:
+                continue
+
             story.append(Paragraph(heading, group))
             story.append(HRFlowable(width="100%", thickness=0.5, color=LIGHT))
             story.append(Spacer(1, 4))

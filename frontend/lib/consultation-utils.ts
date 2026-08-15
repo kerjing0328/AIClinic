@@ -293,3 +293,115 @@ export const SAMPLE_EXTRACTED: Record<string, unknown> = {
     safety_netting: "",
   },
 };
+
+/* ============================================================
+   SOAP-ordered grouping for ReviewStage
+   ============================================================ */
+
+const SOAP_FIELD_ORDER: Record<string, string[]> = {
+  subjective: [
+    "history", "onset", "duration", "progression", "severity",
+    "symptoms", "relevant_negatives", "medical_history",
+    "medications", "allergies", "social_history",
+  ],
+  objective: ["vital_signs", "examination", "findings"],
+  assessment: ["diagnosis", "clinical_impression"],
+  plan: [
+    "medications", "treatment", "referral",
+    "follow_up", "safety_netting", "patient_instructions",
+  ],
+};
+
+function orderedKeys(obj: Record<string, unknown>, order: string[]): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const k of order) {
+    if (k in obj) {
+      result.push(k);
+      seen.add(k);
+    }
+  }
+  for (const k of Object.keys(obj)) {
+    if (!seen.has(k)) result.push(k);
+  }
+  return result;
+}
+
+export interface SoapGroup {
+  heading: string;
+  fields: { key: string; flatKey: string; value: string }[];
+}
+
+/**
+ * Convert raw extracted_data into SOAP-ordered groups for rendering.
+ * Each group has a heading and a flat list of key-value fields.
+ * Nested dicts (like vital_signs) are flattened into the parent group
+ * without creating separate sub-group headers.
+ */
+export function soapGroups(data: Record<string, unknown>): SoapGroup[] {
+  const groups: SoapGroup[] = [];
+  const hasSoap = data.SOAP && typeof data.SOAP === "object";
+
+  // 1. Details — top-level scalars (chief_complaint, type, age, gender, etc.)
+  // flatten() produces keys like "type", "age" — no SOAP prefix for these
+  const topLevel: { key: string; flatKey: string; value: string }[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (k === "SOAP" || k === "investigations" || (typeof v === "object" && v !== null)) continue;
+    topLevel.push({ key: k, flatKey: k, value: _str(v) });
+  }
+  if (topLevel.length) {
+    groups.push({ heading: "Details", fields: topLevel });
+  }
+
+  // 2. SOAP sections in order
+  // flatten() produces "SOAP.subjective.symptoms" — section keys need "SOAP." prefix
+  const soap = (hasSoap ? data.SOAP : data) as Record<string, unknown>;
+  const sectionPrefix = hasSoap ? "SOAP." : "";
+  for (const section of ["subjective", "objective", "assessment", "plan"]) {
+    const sectionData = (soap[section] ?? {}) as Record<string, unknown>;
+    if (!sectionData || Object.keys(sectionData).length === 0) continue;
+
+    const order = SOAP_FIELD_ORDER[section] ?? [];
+    const fields: { key: string; flatKey: string; value: string }[] = [];
+
+    for (const k of orderedKeys(sectionData, order)) {
+      const v = sectionData[k];
+      if (v && typeof v === "object" && !Array.isArray(v)) {
+        // Flatten nested dict (e.g. vital_signs) — no sub-heading
+        for (const [sk, sv] of Object.entries(v as Record<string, unknown>)) {
+          fields.push({ key: sk, flatKey: `${sectionPrefix}${section}.${k}.${sk}`, value: _str(sv) });
+        }
+      } else {
+        fields.push({ key: k, flatKey: `${sectionPrefix}${section}.${k}`, value: _str(v) });
+      }
+    }
+
+    if (fields.length) {
+      groups.push({
+        heading: section.charAt(0).toUpperCase() + section.slice(1),
+        fields,
+      });
+    }
+  }
+
+  // 3. Investigations
+  const inv = (data.investigations ?? {}) as Record<string, unknown>;
+  if (inv && Object.keys(inv).length > 0) {
+    const fields: { key: string; flatKey: string; value: string }[] = [];
+    for (const k of orderedKeys(inv, ["ordered", "results"])) {
+      fields.push({ key: k, flatKey: `${sectionPrefix}investigations.${k}`, value: _str(inv[k]) });
+    }
+    if (fields.length) {
+      groups.push({ heading: "Investigations", fields });
+    }
+  }
+
+  return groups;
+}
+
+function _str(v: unknown): string {
+  if (v === null || v === undefined) return "";
+  if (Array.isArray(v)) return v.join(", ");
+  if (typeof v === "boolean") return v ? "Yes" : "No";
+  return String(v).trim();
+}
