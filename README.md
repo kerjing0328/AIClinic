@@ -18,6 +18,7 @@ An AI-powered clinical application featuring a robust Python backend and a respo
 
 Backend Setup
 
+```bash
 cd backend
 
 # Create a virtual environment (if not already created)
@@ -34,11 +35,12 @@ pip install -r requirements.txt
 
 # Run the backend FastAPI server
 uvicorn app.main:app --reload
-
+```
 ---
 
 Frontend Setup
 
+```bash
 cd frontend
 
 # Install Node modules
@@ -49,3 +51,4 @@ npm run dev
 
 # Access the app
 http://localhost:3000
+```
