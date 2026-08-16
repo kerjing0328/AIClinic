@@ -17,6 +17,7 @@ app.add_middleware(
     allow_origins=[
         "https://laughing-eureka-q5jjx476qwgc4xjp-3000.app.github.dev",
         "http://localhost:3000",
+        "https://notedr.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
