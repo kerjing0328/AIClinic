@@ -21,7 +21,11 @@ Backend Setup
 ```bash
 cd backend
 
-# IMPORTANT: Use your own local virtual environment for this project.
+# IMPORTANT: Use your own local virtual environment and environment variables.
+# Create your own .env file with:
+# SUPABASE_URL=your_supabase_project_url
+# SUPABASE_KEY=your_supabase_anon_key
+# GEMINI_API_KEY=your_gemini_api_key
 
 # Create a virtual environment (if not already created)
 python -m venv .venv
@@ -53,4 +57,7 @@ npm run dev
 
 # Access the app
 http://localhost:3000
+
+# Option: access through hosted frontend:
+https://notedr.vercel.app/
 ```
