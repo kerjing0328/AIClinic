@@ -21,6 +21,8 @@ Backend Setup
 ```bash
 cd backend
 
+# IMPORTANT: Use your own local virtual environment for this project.
+
 # Create a virtual environment (if not already created)
 python -m venv .venv
 
